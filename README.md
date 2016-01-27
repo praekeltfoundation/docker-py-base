@@ -12,7 +12,7 @@ Provides a basic Debian base image with a few utility scripts for handling `apt-
 Another problem is that it's a pain to remember the correct `apt-get` options to get `apt-get` to install packages quietly, without prompting, and without extra packages that we don't need.
 
 #### Our solution:
-Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it easy to run the commands correctly. Simply use `apt-get-install.sh` to install packages and `apt-get-purge.sh` to remove packages.
+Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it easy to run the commands correctly. Simply use [`apt-get-install.sh`](debian-base/scripts/apt-get-install.sh) to install packages and [`apt-get-purge.sh`](debian-base/scripts/apt-get-purge.sh) to remove packages.
 
 ### PID 1 and the zombie reaping problem
 For a complete explanation of this problem see [this](https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) excellent blog post by Phusion. Suffice to say, many programs expect the system they're running on to have an init system that will manage/clean up child processes but most Docker containers don't have an init system.
@@ -35,10 +35,10 @@ There is a subtle difference between the two forms of the [Dockerfile `CMD` dire
 This is a bit of a niche problem-- but sometimes it is useful to provide environment variables at build-time using a separate file rather than by adding a bunch of `ENV` instructions in the Dockerfile. It's impossible to read environment variables using a `RUN` command as each `RUN` command is run in a subshell. One solution is to source the desired file at run-time and then hand over control to the actual process. It's important to do this in a way that doesn't result in a parent shell process.
 
 #### Our solution:
-A simple script that sources a file and then exec's a process: `source-wrapper.sh`.
+A simple script that sources a file and then exec's a process: [`source-wrapper.sh`](debian-base/scripts/source-wrapper.sh).
 
 ### Docker volume owners
 This problem will only apply in certain circumstances when using Docker volumes. The problem arises when the owner (user/group) of the volume on the host does not exist in the Docker container. This is very often the case as the volume directory on the host is likely owned by the current user while in the Docker container there is usually only one user - `root`. There are various obscure permissions problems that can occur in this case, particularly with certain build tools.
 
 #### Our solution:
-A *hack*. The `create-volume-user.sh` script can create a user and group with UID/GID that match those of the volume owner. This must happen at container runtime as the UID/GID of the volume can't be known before the volume is mounted.
+A *hack*. The [`create-volume-user.sh`](debian-base/scripts/create-volume-user.sh) script can create a user and group with UID/GID that match those of the volume owner. This must happen at container runtime as the UID/GID of the volume can't be known before the volume is mounted.
