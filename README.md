@@ -11,25 +11,28 @@ Provides a basic Debian base image with a few utility scripts for handling `apt-
 
 Another problem is that it's a pain to remember the correct `apt-get` options to get `apt-get` to install packages quietly, without prompting, and without extra packages that we don't need.
 
-**Our solution:** Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it easy to run the commands correctly. Simply use `apt-get-install.sh` to install packages and `apt-get-purge.sh` to remove packages.
+#### Our solution:
+Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it easy to run the commands correctly. Simply use `apt-get-install.sh` to install packages and `apt-get-purge.sh` to remove packages.
 
 ### PID 1 and the zombie reaping problem
 For a complete explanation of this problem see [this](https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) excellent blog post by Phusion. Suffice to say, many programs expect the system they're running on to have an init system that will manage/clean up child processes but most Docker containers don't have an init system.
 
-**Our solution:** Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use the (badly named) [`dumb-init`](https://github.com/Yelp/dumb-init) by Yelp.
+#### Our solution:
+Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use the (badly named) [`dumb-init`](https://github.com/Yelp/dumb-init) by Yelp.
 
 This program is the default entrypoint on the `debian-base` image so using it should be automatic most of the time - simply specify a `CMD []` in your Dockerfile.
 
-### The problem with shells and `CMD command arg1` vs `CMD ["command", "arg2"]`
+### Shell parent processes
 It's quite easy to accidentally get Docker to run your containers with `/bin/sh -c` as the entrypoint. The problem with this is that your process then runs under a shell. i.e. the process with PID == 1 is a shell (`/bin/sh`) - and your process is a child of that process. Shells don't usually pass signals down to their child processes so it becomes difficult to send signals and handle graceful shutdowns of your process. Commands like `docker stop` and `docker kill` are effectively broken. With a shell parent process, `docker stop` will simply time out trying to tell your process to stop and will kill the process.
 
 There is a subtle difference between the two forms of the [Dockerfile `CMD` directive](https://docs.docker.com/engine/reference/builder/#cmd). In the (easiest to write) form, `CMD command arg1`, the command is actually wrapped in `/bin/sh -c`. In the other form, `CMD ["command", "arg1"]`, the command is not wrapped and the entrypoint is used if it is set. **Always prefer the second form.**
 
-**Our solution:**
+#### Our solution:
 * Using `dumb-init` as the default entrypoint for the `debian-base` image.
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
 
 ### Docker volume owners
 This problem will only apply in certain circumstances when using Docker volumes. The problem arises when the owner (user/group) of the volume on the host does not exist in the Docker container. This is very often the case as the volume directory on the host is likely owned by the current user while in the Docker container there is usually only one user - `root`. There are various obscure permissions problems that can occur in this case, particularly with certain build tools.
 
-**Our solution:** A hack. The `create-volume-user.sh` script can create a user and group with UID/GID that match those of the volume owner. This must happen at container runtime as the UID/GID of the volume can't be known before the volume is mounted.
+#### Our solution:
+A *hack*. The `create-volume-user.sh` script can create a user and group with UID/GID that match those of the volume owner. This must happen at container runtime as the UID/GID of the volume can't be known before the volume is mounted.
