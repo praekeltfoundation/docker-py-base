@@ -1,8 +1,8 @@
 # dockerfiles
 Dockerfiles for base images that make creating correct, minimal images for applications easier.
 
-## Images:
-### `praekeltfoundation/debian-base`
+## Images
+#### `praekeltfoundation/debian-base`
 Provides a basic Debian base image with a few utility scripts for handling `apt-get`, environment variables, and Docker volumes.
 
 ## Common Docker problems
