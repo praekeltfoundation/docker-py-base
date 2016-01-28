@@ -7,7 +7,7 @@ ENV PATH $PATH:/scripts
 
 # Download dinit (dumb-init)
 ENV DINIT_VERSION "1.0.0"
-RUN apt-get-install.sh ca-certificates curl #&& \
+RUN apt-get-install.sh ca-certificates curl && \
     curl -LSs -o /usr/local/bin/dumb-init \
         https://github.com/Yelp/dumb-init/releases/download/v${DINIT_VERSION}/dumb-init_${DINIT_VERSION}_amd64 && \
     chmod +x /usr/local/bin/dumb-init && \
