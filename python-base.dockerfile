@@ -20,3 +20,4 @@ RUN pip install --upgrade pip==$PYTHON_PIP_VERSION
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
+CMD ["python"]
