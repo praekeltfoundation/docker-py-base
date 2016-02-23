@@ -5,6 +5,12 @@ Dockerfiles for base images that make creating correct, minimal images for appli
 #### `praekeltfoundation/debian-base`
 Provides a basic Debian base image with a few utility scripts for handling `apt-get`, environment variables, and Docker volumes.
 
+### Building the images
+```shell
+IMAGE_NAME=debian-base # For example
+docker build -t ${IMAGE_NAME} -f ${IMAGE_NAME}.dockerfile .
+```
+
 ## Common Docker problems
 ### `apt-get` wasn't designed for containers
 `apt-get` caches a lot of files such as package indexes and package (.deb) files by default. We want to keep our Docker images as small as possible and most of these cached files are not useful to us. Also, we probably want to run `apt-get update` every time something is installed because we have no guarantee when it was last run. Unlike a regular machine - Docker containers generally won't run `apt-get update` automatically at a regular interval.
