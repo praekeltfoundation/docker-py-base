@@ -5,6 +5,9 @@ Dockerfiles for base images that make creating correct, minimal images for appli
 #### `praekeltfoundation/debian-base`
 Provides a basic Debian base image with a few utility scripts for handling `apt-get`, environment variables, and Docker volumes.
 
+#### `praekeltfoundation/python-base`
+Provides a basic Python 2 base image built on Debian with the same utility scripts as `debian-base`. Also configures `pip` to not use a cache and to use the Praekelt Foundation Python Package Index.
+
 ### Building the images
 ```shell
 IMAGE_NAME=debian-base # For example
