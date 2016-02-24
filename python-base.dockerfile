@@ -19,5 +19,5 @@ ADD ./common/dumb-init_${DINIT_VERSION}_amd64 /usr/local/bin/dumb-init
 RUN ln -s /usr/local/bin/dumb-init /usr/local/bin/dinit
 
 # Set dinit as the default entrypoint
-ENTRYPOINT ["shell-wrapper.sh", "dinit"]
+ENTRYPOINT ["eval-args.sh", "dinit"]
 CMD ["python"]
