@@ -36,8 +36,11 @@ It's quite easy to accidentally get Docker to run your containers with `/bin/sh 
 
 There is a subtle difference between the two forms of the [Dockerfile `CMD` directive](https://docs.docker.com/engine/reference/builder/#cmd). In the (easiest to write) form, `CMD command arg1`, the command is actually wrapped in `/bin/sh -c`. In the other form, `CMD ["command", "arg1"]`, the command is not wrapped and the entrypoint is used if it is set. **Always prefer the second form.**
 
+Another problem is that if the command is not wrapped in a shell, variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
+
 ##### Our solution:
-* Using `dumb-init` as the default entrypoint for the `debian-base` image.
+* A Bash script that evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
+* The images have this script launching `dumb-init` as the default `ENTRYPOINT`.
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
 
 ### Sourcing runtime environment variables
