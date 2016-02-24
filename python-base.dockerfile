@@ -19,5 +19,5 @@ ENV PYTHON_PIP_VERSION="8.0.2"
 RUN pip install --upgrade pip==$PYTHON_PIP_VERSION
 
 # Set dinit as the default entrypoint
-ENTRYPOINT ["dinit"]
+ENTRYPOINT ["shell-wrapper.sh", "dinit"]
 CMD ["python"]
