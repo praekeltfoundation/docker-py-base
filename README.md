@@ -39,7 +39,8 @@ There is a subtle difference between the two forms of the [Dockerfile `CMD` dire
 Another problem is that if the command is not wrapped in a shell, variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
 
 ##### Our solution:
-* Starting containers with a shell (Bash) and then `exec`-ing to `dumb-init` to run the `eval`-ed command. This process is the default `ENTRYPOINT`.
+* A Bash script that evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
+* The images have this script launching `dumb-init` as the default `ENTRYPOINT`.
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
 
 ### Sourcing runtime environment variables
