@@ -6,7 +6,7 @@ ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://pypi.p16n.org/simple"
 
 # Update pip
-ENV PYTHON_PIP_VERSION="8.0.2"
+ENV PYTHON_PIP_VERSION="8.1.0"
 RUN pip install --upgrade pip==$PYTHON_PIP_VERSION
 
 # Install utility scripts
