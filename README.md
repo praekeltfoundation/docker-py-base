@@ -8,6 +8,9 @@ Provides a basic Debian base image with a few utility scripts for handling `apt-
 #### `praekeltfoundation/python-base`
 Provides a basic Python 2 base image built on Debian with the same utility scripts as `debian-base`. Also configures `pip` to not use a cache and to use the Praekelt Foundation Python Package Index.
 
+#### `praekeltfoundation/pypy-base`
+Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
+
 ### Building the images
 ```shell
 IMAGE_NAME=debian-base # For example
