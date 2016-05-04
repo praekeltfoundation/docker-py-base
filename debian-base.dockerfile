@@ -6,7 +6,7 @@ ADD ./common/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION "1.0.1"
+ENV DINIT_VERSION "1.0.2"
 RUN set -x \
     && apt-get-install.sh ca-certificates curl \
     && cd /tmp \
