@@ -10,14 +10,14 @@ ADD ./common/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION "1.0.2"
+ENV DINIT_VERSION="1.0.2" \
+    DINIT_SHA256="4adc8eaf54d93e29b5f8e779d5a2165222a8f7f1bf9976c1f65e9379bba6fe08"
 RUN set -x \
     && apt-get-install.sh curl \
     && cd /tmp \
     && DINIT_DEB_FILE="dumb-init_${DINIT_VERSION}_$(dpkg --print-architecture).deb" \
     && curl -sSL -O "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/$DINIT_DEB_FILE" \
-    && curl -sSL "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/sha256sums" | \
-        grep "\s\*\?$DINIT_DEB_FILE$" | sha256sum -c - \
+    && echo "$DINIT_SHA256 *$DINIT_DEB_FILE" | sha256sum -c - \
     && dpkg --install $DINIT_DEB_FILE \
     && rm $DINIT_DEB_FILE \
     && ln -s $(which dumb-init) /usr/local/bin/dinit \
