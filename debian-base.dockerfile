@@ -12,3 +12,8 @@ RUN ln -s /usr/local/bin/dumb-init /usr/local/bin/dinit
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["eval-args.sh", "dinit"]
+
+# Set Bash as the default command. Single child mode is necessary to avoid
+# warnings when launching Bash because of this issue in dumb-init:
+# https://github.com/Yelp/dumb-init/issues/51
+CMD ["--single-child", "--", "bash"]
