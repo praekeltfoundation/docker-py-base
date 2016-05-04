@@ -17,7 +17,7 @@ RUN set -x \
     && DINIT_DEB_FILE="dumb-init_${DINIT_VERSION}_$(dpkg --print-architecture).deb" \
     && curl -sSL -O "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/$DINIT_DEB_FILE" \
     && curl -sSL "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/sha256sums" | \
-        grep "\s$DINIT_DEB_FILE$" | sha256sum -c - \
+        grep "\s\*\?$DINIT_DEB_FILE$" | sha256sum -c - \
     && dpkg --install $DINIT_DEB_FILE \
     && rm $DINIT_DEB_FILE \
     && ln -s $(which dumb-init) /usr/local/bin/dinit \
