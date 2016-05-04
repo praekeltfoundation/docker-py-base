@@ -7,8 +7,17 @@ ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
 ENV DINIT_VERSION "1.0.1"
-ADD ./common/dumb-init_${DINIT_VERSION}_amd64 /usr/local/bin/dumb-init
-RUN ln -s /usr/local/bin/dumb-init /usr/local/bin/dinit
+RUN set -x \
+    && apt-get-install.sh ca-certificates curl \
+    && cd /tmp \
+    && DINIT_DEB_FILE="dumb-init_${DINIT_VERSION}_$(dpkg --print-architecture).deb" \
+    && curl -sSL -O "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/$DINIT_DEB_FILE" \
+    && curl -sSL "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/sha256sums" | \
+        grep "\s$DINIT_DEB_FILE$" | sha256sum -c - \
+    && dpkg --install $DINIT_DEB_FILE \
+    && rm $DINIT_DEB_FILE \
+    && ln -s $(which dumb-init) /usr/local/bin/dinit \
+    && apt-get-purge.sh ca-certificates curl
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["eval-args.sh", "dinit"]
