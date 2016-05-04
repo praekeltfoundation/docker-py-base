@@ -15,7 +15,7 @@ ENV DINIT_VERSION="1.0.2" \
 RUN set -x \
     && apt-get-install.sh curl \
     && cd /tmp \
-    && DINIT_DEB_FILE="dumb-init_${DINIT_VERSION}_$(dpkg --print-architecture).deb" \
+    && DINIT_DEB_FILE="dumb-init_${DINIT_VERSION}_amd64.deb" \
     && curl -sSL -O "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/$DINIT_DEB_FILE" \
     && echo "$DINIT_SHA256 *$DINIT_DEB_FILE" | sha256sum -c - \
     && dpkg --install $DINIT_DEB_FILE \
