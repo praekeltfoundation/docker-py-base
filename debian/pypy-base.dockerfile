@@ -6,7 +6,8 @@ ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://pypi.p16n.org/simple"
 
 # Install utility scripts
-ADD ./common/scripts /scripts
+COPY ./common/scripts /scripts
+COPY ./debian/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)

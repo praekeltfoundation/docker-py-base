@@ -13,8 +13,9 @@ Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the 
 
 ### Building the images
 ```shell
-IMAGE_NAME=debian-base # For example
-docker build -t ${IMAGE_NAME} -f ${IMAGE_NAME}.dockerfile .
+BASE_OS=debian
+IMAGE_NAME=python-base
+docker build -t $IMAGE_NAME -f $BASE_OS/$IMAGE_NAME.dockerfile .
 ```
 
 ## Common Docker problems
@@ -24,7 +25,7 @@ docker build -t ${IMAGE_NAME} -f ${IMAGE_NAME}.dockerfile .
 Another problem is that it's a pain to remember the correct `apt-get` options to get `apt-get` to install packages quietly, without prompting, and without extra packages that we don't need.
 
 ##### Our solution:
-Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it easy to run the commands correctly. Simply use [`apt-get-install.sh`](common/scripts/apt-get-install.sh) to install packages and [`apt-get-purge.sh`](common/scripts/apt-get-purge.sh) to remove packages.
+Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it easy to run the commands correctly. Simply use [`apt-get-install.sh`](debian/scripts/apt-get-install.sh) to install packages and [`apt-get-purge.sh`](debian/scripts/apt-get-purge.sh) to remove packages.
 
 ### PID 1 and the zombie reaping problem
 For a complete explanation of this problem see [this](https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) excellent blog post by Phusion. Suffice to say, many programs expect the system they're running on to have an init system that will manage/clean up child processes but most Docker containers don't have an init system.
