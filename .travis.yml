@@ -1,0 +1,33 @@
+sudo: required
+language: python
+services:
+  - docker
+
+env:
+  global:
+    - REGISTRY_USER=praekelt-org-deploy
+    - secure: "fxMkZ9spj3AA0vgwXpGy1kbqs7L1xZj/zToCYGZacxanTB7XcRj1fvCCxDRvmPCwObB7pZJA2c2ca0K53L3wEqm+9JhvdKHj4v9yO/PFTXcMDws6nLEVKsj1briYZ2QkeVzQSBFUpJEibrDNMm676F6DdsG4qWPRM4Xdz4jd8/O67sW458xS1eMNkknYN04jziUqViWI171TQNFipJe2PjxeZTmQe8UjHPMY5vnQbWQ7kOFrHrVvECXaltTq3neI5fmqNLqBPLWvsFoS5tTpeVRhJO/Li4A2Kx0YS/ourPzfHZgAA9IW0K3gg6aaOXeG9KHakl62JUNCoo9iB9eKGpte2DvgLQe42tnJXNs/VNKyHevxuo/bFLUeLhbhgl6a7WK2YCU2ADlLE0vByz5bDa34qKHHwoUzMaaLainEGwHJZc/vfB6i3WJ1Af5WScj649WSSvPGbsSQQ7jlsdQzsozJtoPXxfSEkHfeRVtLaC8K9Uf4D/jGtKW6+r3YjcGYI0JNJw01Yv5Y4QN5O8SflQdIdM2Bfc+iWEVkThOL3Eyv06QsVGX2WaJL1bJ/CIyhGO1gILmfU5TcdE9REbnBeBE656R6cZ8JrHQfVX0lLRkC14ZeyMXQBqYMRsDs9VbWf9GNdYCL88Mj+WTZJb1w00XcHqBM+KoTgOjXHhh6+Xg="
+  matrix:
+    - BASE_OS=debian IMAGE=debian-base
+    - BASE_OS=debian IMAGE=python-base
+    - BASE_OS=debian IMAGE=pypy-base
+    - BASE_OS=alpine IMAGE=alpine-base
+    - BASE_OS=alpine IMAGE=python-base TAG=alpine
+
+# Update Docker Engine
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-engine
+
+script:
+  - docker build -t "praekeltfoundation/$IMAGE" -f "$BASE_OS/$IMAGE.dockerfile" .
+
+# Deploy to Docker Hub (default registry) using docker-ci-deploy
+before_deploy:
+  - pip install docker-ci-deploy
+  - if [ -n "$TAG" ]; then TAG_OPT="--tag $TAG"; else TAG_OPT=""; fi
+deploy:
+  provider: script
+  script: docker-ci-deploy --tag latest $TAG_OPT --login "$REGISTRY_USER:$REGISTRY_PASS" "praekeltfoundation/$IMAGE"
+  on:
+    branch: develop
