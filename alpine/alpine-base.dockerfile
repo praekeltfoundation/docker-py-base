@@ -1,4 +1,4 @@
-FROM alpine:3.3
+FROM alpine:3.4
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # Install utility scripts
