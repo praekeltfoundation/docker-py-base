@@ -1,4 +1,4 @@
-FROM debian:8.4
+FROM debian:8.5
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # Install utility scripts
