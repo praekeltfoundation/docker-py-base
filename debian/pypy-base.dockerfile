@@ -11,8 +11,8 @@ COPY ./debian/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION="1.0.3" \
-    DINIT_SHA256="ee94a77386fe275c97592176b935e3ff6f0631efbbff65054c301096f98c88e1"
+ENV DINIT_VERSION="1.1.0" \
+    DINIT_SHA256="0d2b45e7ae3d325da3a19b55584a02640eb83c3378bf709c343001d3b8c036c3"
 RUN set -x \
     && apt-get-install.sh curl \
     && cd /tmp \
