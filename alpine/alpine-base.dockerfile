@@ -7,8 +7,8 @@ COPY ./common/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION="1.0.3" \
-    DINIT_SHA256="ca2e4641b66d7687422418c0f81652dc2c7cc3bdd09082b95150f1d090f9244d"
+ENV DINIT_VERSION="1.1.0" \
+    DINIT_SHA256="8943d6b185bfd00706d1634f1f72c5b819d89154eedf91faf40dd360c2e1ea31"
 RUN set -x \
     && apk add --no-cache ca-certificates curl \
     && DINIT_FILE="dumb-init_${DINIT_VERSION}_amd64" \
