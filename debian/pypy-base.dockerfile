@@ -1,4 +1,4 @@
-FROM pypy:2-5.3.0-slim
+FROM pypy:2-5.3.1-slim
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
@@ -11,8 +11,8 @@ COPY ./debian/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION="1.1.0" \
-    DINIT_SHA256="0d2b45e7ae3d325da3a19b55584a02640eb83c3378bf709c343001d3b8c036c3"
+ENV DINIT_VERSION="1.1.1" \
+    DINIT_SHA256="6a8c0aba1db90c5fffa7e2bbd4d4cda4905563cebd829ec89f8704733bdd71c0"
 RUN set -x \
     && apt-get-install.sh curl \
     && cd /tmp \
