@@ -1,4 +1,4 @@
-FROM python:2.7.11-alpine
+FROM python:2.7.12-alpine
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # ca-certificates not installed in Alpine Python images for some reason:
