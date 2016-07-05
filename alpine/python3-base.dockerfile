@@ -8,9 +8,6 @@ RUN apk add --no-cache ca-certificates
 # pip: Disable cache -- no Praekelt PyPi for Alpine yet...
 ENV PIP_NO_CACHE_DIR="false"
 
-# wheel isn't installed in Python 3 by default
-RUN pip install wheel
-
 # Install utility scripts
 COPY ./common/scripts /scripts
 # COPY ./alpine/scripts /scripts

@@ -5,9 +5,6 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://pypi.p16n.org/simple"
 
-# wheel isn't installed in Python 3 by default
-RUN pip install wheel
-
 # Install utility scripts
 COPY ./common/scripts /scripts
 COPY ./debian/scripts /scripts
