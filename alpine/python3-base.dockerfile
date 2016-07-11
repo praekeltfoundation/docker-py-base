@@ -5,8 +5,9 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 # https://github.com/docker-library/python/issues/109
 RUN apk add --no-cache ca-certificates
 
-# pip: Disable cache -- no Praekelt PyPi for Alpine yet...
-ENV PIP_NO_CACHE_DIR="false"
+# pip: Disable cache and use Praekelt Foundation Python Package Index
+ENV PIP_NO_CACHE_DIR="false" \
+    PIP_EXTRA_INDEX_URL="https://alpine-3.wheelhouse.praekelt.org/simple"
 
 # Install utility scripts
 COPY ./common/scripts /scripts
