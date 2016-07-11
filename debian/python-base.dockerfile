@@ -3,7 +3,7 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
-    PIP_EXTRA_INDEX_URL="https://pypi.p16n.org/simple"
+    PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
 
 # Install utility scripts
 COPY ./common/scripts /scripts
