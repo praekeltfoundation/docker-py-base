@@ -5,31 +5,35 @@ services:
 
 env:
   global:
+    - IMAGE_USER=praekeltfoundation
     - REGISTRY_USER=praekeltorgdeploy
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
     - TAGS=latest # Default to 'latest' tag, override in matrix
   matrix:
-    - BASE_OS=alpine IMAGE=alpine-base
-    - BASE_OS=alpine IMAGE=python-base TAGS=alpine
-    - BASE_OS=alpine IMAGE=python3-base TAGS=alpine
-    - BASE_OS=debian IMAGE=debian-base
-    - BASE_OS=debian IMAGE=pypy-base
-    - BASE_OS=debian IMAGE=python-base
-    - BASE_OS=debian IMAGE=python3-base
+    - BASE_OS=alpine IMAGE=alpine-base  TAG_LATEST=
+    - BASE_OS=alpine IMAGE=python-base  TAG_LATEST=
+    - BASE_OS=alpine IMAGE=python3-base TAG_LATEST=
+    - BASE_OS=debian IMAGE=debian-base  TAG_LATEST=1
+    - BASE_OS=debian IMAGE=pypy-base    TAG_LATEST=1
+    - BASE_OS=debian IMAGE=python-base  TAG_LATEST=1
+    - BASE_OS=debian IMAGE=python3-base TAG_LATEST=1
 
 # Update Docker Engine
 before_install:
   - sudo apt-get update
   - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-engine
 
+before_script:
+  - IMAGE="$IMAGE_USER/$IMAGE:$BASE_OS"
 script:
-  - docker build -t "praekeltfoundation/$IMAGE" -f "$BASE_OS/$IMAGE.dockerfile" .
+  - docker build -t "$IMAGE" -f "$BASE_OS/$IMAGE.dockerfile" .
 
 # Deploy to Docker Hub (default registry) using docker-ci-deploy
 before_deploy:
   - pip install docker-ci-deploy
+  - TAGS="$IMAGE${TAG_LATEST:+ latest}"
 deploy:
   provider: script
-  script: docker-ci-deploy --tag $TAGS --login "$REGISTRY_USER:$REGISTRY_PASS" "praekeltfoundation/$IMAGE"
+  script: docker-ci-deploy --tag $TAGS --login "$REGISTRY_USER:$REGISTRY_PASS" "$IMAGE"
   on:
     branch: develop
