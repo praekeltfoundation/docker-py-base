@@ -2,11 +2,11 @@
 Dockerfiles for base images that make creating correct, minimal images for applications easier.
 
 ## Images
-#### `praekeltfoundation/debian-base`
-Provides a basic Debian base image with a few utility scripts for handling `apt-get`, environment variables, and Docker volumes.
+#### `praekeltfoundation/base`
+Provides Debian and Alpine Linux base images with a few utility scripts and `dumb-init`.
 
 #### `praekeltfoundation/python-base`
-Provides a basic Python 2 base image built on Debian with the same utility scripts as `debian-base`. Also configures `pip` to not use a cache and to use the Praekelt Foundation Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
+Provides Debian- and Alpine Linux-based Python 2 images with the same utility scripts and `dumb-init` setup as the `base` image. Also configures `pip` to not use a cache and to use the Praekelt Foundation Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/python3-base`
 Same as the `python-base` image but with Python 3.
@@ -14,11 +14,19 @@ Same as the `python-base` image but with Python 3.
 #### `praekeltfoundation/pypy-base`
 Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
 
+#### Tags
+In general, the images are tagged with their operating system, so `:alpine` or `:debian`. The `:latest` tags always point to the `:debian` images.
+
 ### Building the images
+You can emulate what Travis does, changing `$BASE_OS` and `$VARIANT` for the image you want:
 ```shell
-BASE_OS=debian
-IMAGE_NAME=python-base
-docker build -t $IMAGE_NAME -f $BASE_OS/$IMAGE_NAME.dockerfile .
+IMAGE_USER=praekeltfoundation IMAGE_NAME=base
+BASE_OS=debian VARIANT=python
+
+IMAGE_TAG="$IMAGE_USER/${VARIANT:+$VARIANT-}$IMAGE_NAME:$BASE_OS"
+DOCKERFILE="$BASE_OS/${VARIANT:-Dockerfile}${VARIANT:+.dockerfile}"
+
+docker build -t "$IMAGE_TAG" -f "$DOCKERFILE" .
 ```
 
 ## Common Docker problems
