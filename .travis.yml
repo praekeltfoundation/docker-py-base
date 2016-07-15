@@ -24,18 +24,18 @@ before_install:
   - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-engine
 
 before_script:
-  - IMAGE="$IMAGE_USER/$IMAGE:$BASE_OS"
+  - IMAGE_TAG="$IMAGE_USER/$IMAGE:$BASE_OS"
 script:
-  - docker build -t "$IMAGE" -f "$BASE_OS/$IMAGE.dockerfile" .
+  - docker build -t "$IMAGE_TAG" -f "$BASE_OS/$IMAGE.dockerfile" .
 after_script:
   - docker images
 
 # Deploy to Docker Hub (default registry) using docker-ci-deploy
 before_deploy:
   - pip install docker-ci-deploy
-  - TAGS="$IMAGE${TAG_LATEST:+ latest}"
+  - TAGS="$IMAGE_TAG${TAG_LATEST:+ latest}"
 deploy:
   provider: script
-  script: docker-ci-deploy --tag $TAGS --login "$REGISTRY_USER:$REGISTRY_PASS" "$IMAGE"
+  script: docker-ci-deploy --tag $TAGS --login "$REGISTRY_USER:$REGISTRY_PASS" "$IMAGE_TAG"
   on:
     branch: develop
