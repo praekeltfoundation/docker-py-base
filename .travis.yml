@@ -26,6 +26,7 @@ before_install:
 before_script:
   - IMAGE_TAG="$IMAGE_USER/${VARIANT:+$VARIANT-}$BASE_NAME:$BASE_OS"
   - DOCKERFILE="$BASE_OS/${VARIANT:-Dockerfile}${VARIANT:+.dockerfile}"
+  - echo "Building image $IMAGE_TAG from dockerfile $DOCKERFILE..."
 script:
   - docker build -t "$IMAGE_TAG" -f "$DOCKERFILE" .
 after_script:
