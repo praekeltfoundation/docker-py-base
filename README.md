@@ -54,10 +54,9 @@ There is a subtle difference between the two forms of the [Dockerfile `CMD` dire
 Another problem is that if the command is not wrapped in a shell, variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
 
 ##### Our solution:
-* The images have this script launching `dumb-init` as the default `ENTRYPOINT`.
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
 * Remember to [`exec`](http://www.grymoire.com/Unix/Sh.html#uh-72) processes launched by shell scripts.
-* A Bash script ([`eval-args.sh`](common/scripts/eval-args.sh)) that evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
+* A Bash script ([`eval-args.sh`](common/scripts/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
 
 ### Python package dependencies
 Installing the correct runtime native dependencies for Python packages is not always straightforward. For instance, a package like [`Pillow`](https://pypi.python.org/pypi/Pillow) has dependencies on a number of C libraries for working with images, such as [`libjpeg`](http://libjpeg.sourceforge.net) or [`libwebp`](https://chromium.googlesource.com/webm/libwebp). It's not always clear which libraries are required.
