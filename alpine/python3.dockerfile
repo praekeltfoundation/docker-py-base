@@ -12,7 +12,7 @@ ENV PIP_NO_CACHE_DIR="false" \
 
 # Install utility scripts
 COPY ./common/scripts /scripts
-# COPY ./alpine/scripts /scripts
+COPY ./alpine/scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Install dinit (dumb-init)
