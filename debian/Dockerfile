@@ -21,7 +21,7 @@ RUN set -x \
     && apt-get-purge.sh ca-certificates curl
 
 # Set dinit as the default entrypoint
-ENTRYPOINT ["eval-args.sh", "dinit"]
+ENTRYPOINT ["dinit"]
 
 # Set Bash as the default command. Single child mode is necessary to avoid
 # warnings when launching Bash because of this issue in dumb-init:

@@ -44,7 +44,7 @@ For a complete explanation of this problem see [this](https://blog.phusion.nl/20
 ##### Our solution:
 Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use the (badly named) [`dumb-init`](https://github.com/Yelp/dumb-init) by Yelp.
 
-This program is the default entrypoint on the `debian-base` image so using it should be automatic most of the time - simply specify a `CMD []` in your Dockerfile.
+This program is the default entrypoint for all the images, so using it should be automatic most of the time - simply specify a `CMD []` in your Dockerfile.
 
 ### Shell parent processes
 It's quite easy to accidentally get Docker to run your containers with `/bin/sh -c` as the entrypoint. The problem with this is that your process then runs under a shell. i.e. the process with PID == 1 is a shell (`/bin/sh`) - and your process is a child of that process. Shells don't usually pass signals down to their child processes so it becomes difficult to send signals and handle graceful shutdowns of your process. Commands like `docker stop` and `docker kill` are effectively broken. With a shell parent process, `docker stop` will simply time out trying to tell your process to stop and will kill the process.
@@ -54,24 +54,15 @@ There is a subtle difference between the two forms of the [Dockerfile `CMD` dire
 Another problem is that if the command is not wrapped in a shell, variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
 
 ##### Our solution:
-* A Bash script that evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
-* The images have this script launching `dumb-init` as the default `ENTRYPOINT`.
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
-
-### Sourcing runtime environment variables
-This is a bit of a niche problem-- but sometimes it is useful to provide environment variables at build-time using a separate file rather than by adding a bunch of `ENV` instructions in the Dockerfile. It's impossible to read environment variables using a `RUN` command as each `RUN` command is run in a subshell. One solution is to source the desired file at run-time and then hand over control to the actual process. It's important to do this in a way that doesn't result in a parent shell process.
-
-##### Our solution:
-A simple script that sources a file and then exec's a process: [`source-wrapper.sh`](common/scripts/source-wrapper.sh).
-
-### Docker volume owners
-This problem will only apply in certain circumstances when using Docker volumes. The problem arises when the owner (user/group) of the volume on the host does not exist in the Docker container. This is very often the case as the volume directory on the host is likely owned by the current user while in the Docker container there is usually only one user - `root`. There are various obscure permissions problems that can occur in this case, particularly with certain build tools.
-
-##### Our solution:
-A *hack*. The [`create-volume-user.sh`](debian/scripts/create-volume-user.sh) script can create a user and group with UID/GID that match those of the volume owner. This must happen at container runtime as the UID/GID of the volume can't be known before the volume is mounted.
+* Remember to [`exec`](http://www.grymoire.com/Unix/Sh.html#uh-72) processes launched by shell scripts.
+* A Bash script ([`eval-args.sh`](common/scripts/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
 
 ### Python package dependencies
 Installing the correct runtime native dependencies for Python packages is not always straightforward. For instance, a package like [`Pillow`](https://pypi.python.org/pypi/Pillow) has dependencies on a number of C libraries for working with images, such as [`libjpeg`](http://libjpeg.sourceforge.net) or [`libwebp`](https://chromium.googlesource.com/webm/libwebp). It's not always clear which libraries are required.
 
 #### Our solution:
 We build binary distributions of Python packages that we commonly use and host them in a PyPi repository. For more information, see [this repo](https://github.com/praekeltfoundation/debian-wheel-mirror). On our Alpine Linux images, we've added a script ([`install-py-pkg-deps.sh`](alpine/scripts/install-py-pkg-deps.sh)) that scans Python's site-packages directories for linked libraries and then installs the packages that provide those libraries.
+
+## Older scripts
+Some of our common practices for Docker containers have evolved over time and a few of the patterns we've used in the past we're not using much anymore. For posterity, the [`scripts-archive`](scripts-archive) directory contains some scripts that we don't use anymore and aren't built into our images but some people may still find useful.

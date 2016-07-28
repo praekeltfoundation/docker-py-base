@@ -19,7 +19,7 @@ RUN set -x \
     && apk del ca-certificates curl
 
 # Set dinit as the default entrypoint
-ENTRYPOINT ["eval-args.sh", "dinit"]
+ENTRYPOINT ["dinit"]
 
 # Set sh as the default command. Single child mode is necessary to avoid
 # warnings when launching sh because of this issue in dumb-init:

@@ -28,5 +28,5 @@ RUN set -x \
     && apk del curl
 
 # Set dinit as the default entrypoint
-ENTRYPOINT ["eval-args.sh", "dinit"]
+ENTRYPOINT ["dinit"]
 CMD ["python"]
