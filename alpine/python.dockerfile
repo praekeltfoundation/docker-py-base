@@ -4,7 +4,10 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 # ca-certificates not installed in Alpine Python images for some reason:
 # https://github.com/docker-library/python/issues/109
 # Also install libffi as it is required by cffi and present in the Debian images
-RUN apk add --no-cache ca-certificates libffi
+RUN apk add --no-cache \
+        ca-certificates \
+        libffi \
+        su-exec
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \

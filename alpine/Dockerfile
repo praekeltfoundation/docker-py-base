@@ -1,6 +1,8 @@
 FROM alpine:3.4
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
+RUN apk add --no-cache su-exec
+
 # Install utility scripts
 COPY ./common/scripts /scripts
 # COPY ./alpine/scripts /scripts
