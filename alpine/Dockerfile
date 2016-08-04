@@ -3,11 +3,6 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 RUN apk add --no-cache su-exec
 
-# Install utility scripts
-COPY ./common/scripts /scripts
-# COPY ./alpine/scripts /scripts
-ENV PATH $PATH:/scripts
-
 # Install dinit (dumb-init)
 ENV DINIT_VERSION="1.1.2" \
     DINIT_SHA256="fa3743ec2a24482932065d750fd8abb1c2cdf24f1fde54c9e6d5053822c694c0"
@@ -19,6 +14,11 @@ RUN set -x \
     && chmod +x /usr/bin/dumb-init \
     && ln -s /usr/bin/dumb-init /usr/local/bin/dinit \
     && apk del ca-certificates curl
+
+# Install utility scripts
+COPY ./common/scripts /scripts
+# COPY ./alpine/scripts /scripts
+ENV PATH $PATH:/scripts
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
