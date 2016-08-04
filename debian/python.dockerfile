@@ -12,7 +12,7 @@ ENV PATH $PATH:/scripts
 
 ENV DINIT_VERSION="1.1.2" \
     DINIT_SHA256="3a994810864576b2fd4c87b7513976e8a7dff11a5e1fa1784297ff23380c1c3d" \
-    GOSU_VERSION 1.9
+    GOSU_VERSION="1.9"
 RUN set -x \
     && apt-get-install.sh ca-certificates curl \
 # Install dumb-init
