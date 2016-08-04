@@ -58,6 +58,36 @@ Another problem is that if the command is not wrapped in a shell, variables aren
 * Remember to [`exec`](http://www.grymoire.com/Unix/Sh.html#uh-72) processes launched by shell scripts.
 * A Bash script ([`eval-args.sh`](common/scripts/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
 
+### Changing user at runtime
+By default, everything in Docker containers is run as the root user. While containers are relatively isolated from the host machine they run on, Docker doesn't make any guarantees about that isolation from a security perspective. It is considered a best practice to lower privileges within a container. Docker provides a mechanism to change users: the [`USER`](https://docs.docker.com/engine/reference/builder/#/user) Dockerfile command. Setting the `USER` results in all subsequent commands in the Dockerfile to be run under that user. The problem with this is that in practice one generally wants to perform actions that would require root permissions right up until the main container process is launched. For example, you might want to install some more packages, or the entrypoint script for your process might need to create a working directory for your process.
+
+Unfortunately, existing tools like `su` and `sudo` weren't designed for use inside containers and introduce their own problems, similar to those described above with parent shell processes. For more information, read the [`gosu`](https://github.com/tianon/gosu#why) docs.
+
+#### Our solution:
+* `su-exec`: We install [`su-exec`](https://github.com/ncopa/su-exec) on the Alpine Linux images which has an identical interface to the better-known [`gosu`](https://github.com/tianon/gosu) but is a much smaller binary and available in the Alpine package archives. On Debian we install `gosu` and symlink it to be available as `su-exec`.
+* Generally you should create a user to run your process under and then `su-exec` to that user in the entrypoint script for the process. For example:
+
+`Dockerfile`:
+```dockerfile
+# ...
+RUN addgroup vumi \
+    && adduser -S -G vumi vumi
+# ...
+COPY docker-entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+```
+
+`docker-entrypoint.sh`:
+```shell
+#!/usr/bin/dumb-init /bin/sh
+# ...
+
+exec su-exec vumi \
+    twistd --nodaemon vumi_worker \
+    --param1 arg1 \
+    --param2 arg2
+```
+
 ### Python package dependencies
 Installing the correct runtime native dependencies for Python packages is not always straightforward. For instance, a package like [`Pillow`](https://pypi.python.org/pypi/Pillow) has dependencies on a number of C libraries for working with images, such as [`libjpeg`](http://libjpeg.sourceforge.net) or [`libwebp`](https://chromium.googlesource.com/webm/libwebp). It's not always clear which libraries are required.
 

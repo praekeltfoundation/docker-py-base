@@ -1,10 +1,7 @@
 FROM alpine:3.4
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
-# Install utility scripts
-COPY ./common/scripts /scripts
-# COPY ./alpine/scripts /scripts
-ENV PATH $PATH:/scripts
+RUN apk add --no-cache su-exec
 
 # Install dinit (dumb-init)
 ENV DINIT_VERSION="1.1.2" \
@@ -17,6 +14,11 @@ RUN set -x \
     && chmod +x /usr/bin/dumb-init \
     && ln -s /usr/bin/dumb-init /usr/local/bin/dinit \
     && apk del ca-certificates curl
+
+# Install utility scripts
+COPY ./common/scripts /scripts
+# COPY ./alpine/scripts /scripts
+ENV PATH $PATH:/scripts
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
