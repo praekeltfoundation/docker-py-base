@@ -14,7 +14,7 @@ ENV DINIT_VERSION="1.1.2" \
     DINIT_SHA256="3a994810864576b2fd4c87b7513976e8a7dff11a5e1fa1784297ff23380c1c3d" \
     GOSU_VERSION="1.9"
 RUN set -x \
-    && apt-get-install.sh ca-certificates curl \
+    && apt-get-install.sh curl \
 # Install dumb-init
     && DINIT_DEB_FILE="dumb-init_${DINIT_VERSION}_amd64.deb" \
     && curl -fsL -o /tmp/$DINIT_DEB_FILE "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/$DINIT_DEB_FILE" \
@@ -34,7 +34,7 @@ RUN set -x \
     && ln -s $(which gosu) /usr/local/bin/su-exec \
     && su-exec nobody true \
     \
-    && apt-get-purge.sh ca-certificates curl
+    && apt-get-purge.sh curl
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
