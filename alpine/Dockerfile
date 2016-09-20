@@ -4,8 +4,8 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 RUN apk add --no-cache su-exec
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION="1.1.2" \
-    DINIT_SHA256="fa3743ec2a24482932065d750fd8abb1c2cdf24f1fde54c9e6d5053822c694c0"
+ENV DINIT_VERSION="1.1.3" \
+    DINIT_SHA256="1af305fc011c72aa899c88fe6576e82f2c7657d8d5212a13583fd2de012e478f"
 RUN set -x \
     && apk add --no-cache ca-certificates curl \
     && DINIT_FILE="dumb-init_${DINIT_VERSION}_amd64" \
