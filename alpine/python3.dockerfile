@@ -7,8 +7,8 @@ RUN apk add --no-cache \
         su-exec
 
 # Install dinit (dumb-init)
-ENV DINIT_VERSION="1.1.3" \
-    DINIT_SHA256="1af305fc011c72aa899c88fe6576e82f2c7657d8d5212a13583fd2de012e478f"
+ENV DINIT_VERSION="1.2.0" \
+    DINIT_SHA256="81231da1cd074fdc81af62789fead8641ef3f24b6b07366a1c34e5b059faf363"
 RUN set -x \
     && apk add --no-cache curl \
     && DINIT_FILE="dumb-init_${DINIT_VERSION}_amd64" \
