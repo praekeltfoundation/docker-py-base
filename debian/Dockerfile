@@ -6,9 +6,9 @@ COPY ./common/scripts /scripts
 COPY ./debian/scripts /scripts
 ENV PATH $PATH:/scripts
 
-ENV DINIT_VERSION="1.1.3" \
-    DINIT_SHA256="34995cf69c88311e9475b4d101186b1d5f4d653f222e41c6e5643ff4e6f56f54" \
-    GOSU_VERSION="1.9"
+ENV DINIT_VERSION="1.2.0" \
+    DINIT_SHA256="9af7440986893c904f24c086c50846ddc5a0f24864f5566b747b8f1a17f7fd52" \
+    GOSU_VERSION="1.10"
 RUN set -x \
     && apt-get-install.sh ca-certificates curl \
 # Install dumb-init
@@ -34,8 +34,4 @@ RUN set -x \
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
-
-# Set Bash as the default command. Single child mode is necessary to avoid
-# warnings when launching Bash because of this issue in dumb-init:
-# https://github.com/Yelp/dumb-init/issues/51
-CMD ["--single-child", "--", "bash"]
+CMD ["bash"]
