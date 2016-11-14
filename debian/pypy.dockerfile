@@ -5,8 +5,9 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
 
-# Make PyPy available at /usr/bin/python for compatibility
-RUN update-alternatives --install /usr/bin/python python /usr/local/bin/pypy 50
+# Make pypy available as python for compatibility
+RUN cd /usr/local/bin \
+    && ln -s pypy python
 
 # Install utility scripts
 COPY ./common/scripts /scripts

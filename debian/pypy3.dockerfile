@@ -5,8 +5,11 @@ MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
 
-# Make PyPy available at /usr/bin/python for compatibility
-RUN update-alternatives --install /usr/bin/python python /usr/local/bin/pypy 50
+# Make pypy3 available as pypy, python3, and python for compatibility (the
+# official Python 3 image makes python3 available as python so we're doing
+# something like that here)
+RUN cd /usr/local/bin \
+    && ln -s pypy3 pypy python3 python
 
 # Install utility scripts
 COPY ./common/scripts /scripts
@@ -41,4 +44,4 @@ RUN set -x \
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
-CMD ["pypy"]
+CMD ["pypy3"]
