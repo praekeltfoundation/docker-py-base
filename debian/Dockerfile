@@ -1,5 +1,5 @@
 FROM debian:8.6
-MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
+MAINTAINER Praekelt.org <sre@praekelt.org>
 
 # Install utility scripts
 COPY ./common/scripts /scripts

@@ -1,5 +1,5 @@
 FROM pypy:2-5.6.0-slim
-MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
+MAINTAINER Praekelt.org <sre@praekelt.org>
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
