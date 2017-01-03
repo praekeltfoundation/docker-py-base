@@ -1,4 +1,4 @@
-FROM python:2.7.12-alpine
+FROM python:2.7.13-alpine
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # Install libffi as it is required by cffi and present in the Debian images

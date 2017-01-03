@@ -1,4 +1,4 @@
-FROM python:2.7.12-slim
+FROM python:2.7.13-slim
 MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
