@@ -1,5 +1,5 @@
 FROM python:3.5.2-alpine
-MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
+MAINTAINER Praekelt.org <sre@praekelt.org>
 
 # Install libffi as it is required by cffi and present in the Debian images
 RUN apk add --no-cache \
