@@ -1,4 +1,4 @@
-FROM debian:8.6
+FROM debian:8.7
 MAINTAINER Praekelt.org <sre@praekelt.org>
 
 # Install utility scripts
