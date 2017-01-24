@@ -1,5 +1,5 @@
 FROM alpine:3.5
-MAINTAINER Praekelt.org <sre@praekelt.org>
+LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 RUN apk add --no-cache su-exec
 
