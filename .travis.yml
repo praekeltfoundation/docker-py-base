@@ -15,6 +15,7 @@ env:
     - BASE_OS=alpine VARIANT=python3 TAG_LATEST=
     - BASE_OS=debian VARIANT=        TAG_LATEST=1
     - BASE_OS=debian VARIANT=pypy    TAG_LATEST=1
+    - BASE_OS=debian VARIANT=pypy3   TAG_LATEST=1
     - BASE_OS=debian VARIANT=python  TAG_LATEST=1
     - BASE_OS=debian VARIANT=python3 TAG_LATEST=1
 

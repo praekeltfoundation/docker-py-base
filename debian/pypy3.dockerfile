@@ -1,13 +1,15 @@
-FROM pypy:2-5.6.0-slim
-LABEL maintainer "Praekelt.org <sre@praekelt.org>"
+FROM pypy:3-5.5.0-alpha-slim
+MAINTAINER Praekelt Foundation <dev@praekeltfoundation.org>
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
 
-# Make pypy available as python for compatibility
+# Make pypy3 available as pypy, python3, and python for compatibility (the
+# official Python 3 image makes python3 available as python so we're doing
+# something like that here)
 RUN cd /usr/local/bin \
-    && ln -s pypy python
+    && ln -s pypy3 pypy python3 python
 
 # Install utility scripts
 COPY ./common/scripts /scripts
@@ -42,4 +44,4 @@ RUN set -x \
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
-CMD ["pypy"]
+CMD ["pypy3"]
