@@ -36,7 +36,7 @@ before_script:
   - image_tag="$name${tag:+:$tag}"
   - dockerfile="$BASE_OS/${VARIANT:+$VARIANT/${VERSION:+$VERSION/}}Dockerfile"
   # Parse version from the base image in the FROM directive
-  - version="$(awk '$1 == "FROM" { print $2 }' "$dockerfile" | grep -oE '\d+[-\.]\d+(\.\d+)*')"
+  - version="$(awk '$1 == "FROM" { print $2 }' "$dockerfile" | grep -oP '\d+[-\.]\d+(\.\d+)*')"
   - echo "Building image $image_tag from dockerfile $dockerfile with version $version..."
 script:
   - docker build --tag "$image_tag" --file "$dockerfile" "$BASE_OS"
