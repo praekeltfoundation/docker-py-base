@@ -2,31 +2,23 @@
 Dockerfiles for base images that make creating correct, minimal images for applications easier.
 
 ## Images
-#### `praekeltfoundation/base`
+#### `praekeltfoundation/debian-base`/`alpine-base`
 Provides Debian and Alpine Linux base images with a few utility scripts and `dumb-init`.
 
 #### `praekeltfoundation/python-base`
-Provides Debian- and Alpine Linux-based Python 2 images with the same utility scripts and `dumb-init` setup as the `base` image. Also configures `pip` to not use a cache and to use the Praekelt Foundation Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
-
-#### `praekeltfoundation/python3-base`
-Same as the `python-base` image but with Python 3.
+Provides Debian- and Alpine Linux-based Python images with the same utility scripts and `dumb-init` setup as the `base` image. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/pypy-base`
 Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
 
 #### Tags
-In general, the images are tagged with their operating system, so `:alpine` or `:debian`. The `:latest` tags always point to the `:debian` images.
+Debian is the default operating system and `:latest` tags will point to the Debian variants of images. Alpine variants are tagged with `:alpine`.
 
 ### Building the images
-You can emulate what Travis does, changing `$BASE_OS` and `$VARIANT` for the image you want:
-```shell
-IMAGE_USER=praekeltfoundation IMAGE_NAME=base
-BASE_OS=debian VARIANT=python
+Images are built in the context of their OS directories. So you can run something like this to build, for example, the Alpine Python 2.7 image:
 
-IMAGE_TAG="$IMAGE_USER/${VARIANT:+$VARIANT-}$IMAGE_NAME:$BASE_OS"
-DOCKERFILE="$BASE_OS/${VARIANT:-Dockerfile}${VARIANT:+.dockerfile}"
-
-docker build -t "$IMAGE_TAG" -f "$DOCKERFILE" .
+```
+> $ docker build -t python-base:2.7-alpine -f alpine/python/2.7/Dockerfile alpine
 ```
 
 ## Common Docker problems
