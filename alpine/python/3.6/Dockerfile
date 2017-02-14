@@ -23,8 +23,7 @@ ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://alpine-3.wheelhouse.praekelt.org/simple"
 
 # Install utility scripts
-COPY ./common/scripts /scripts
-COPY ./alpine/scripts /scripts
+COPY scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Set dinit as the default entrypoint

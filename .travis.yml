@@ -6,17 +6,17 @@ services:
 env:
   global:
     - IMAGE_USER=praekeltfoundation
-    - IMAGE_NAME=base
+    - DEFAULT_OS=debian
     - REGISTRY_USER=praekeltorgdeploy
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
   matrix:
-    - BASE_OS=alpine VARIANT=        TAG_LATEST=
-    - BASE_OS=alpine VARIANT=python  TAG_LATEST=
-    - BASE_OS=alpine VARIANT=python3 TAG_LATEST=
-    - BASE_OS=debian VARIANT=        TAG_LATEST=1
-    - BASE_OS=debian VARIANT=pypy    TAG_LATEST=1
-    - BASE_OS=debian VARIANT=python  TAG_LATEST=1
-    - BASE_OS=debian VARIANT=python3 TAG_LATEST=1
+    - BASE_OS=alpine VARIANT=       VERSION=    TAG_LATEST=1
+    - BASE_OS=alpine VARIANT=python VERSION=2.7 TAG_LATEST=
+    - BASE_OS=alpine VARIANT=python VERSION=3.6 TAG_LATEST=
+    - BASE_OS=debian VARIANT=       VERSION=    TAG_LATEST=1
+    - BASE_OS=debian VARIANT=pypy   VERSION=2   TAG_LATEST=1
+    - BASE_OS=debian VARIANT=python VERSION=2.7 TAG_LATEST=1
+    - BASE_OS=debian VARIANT=python VERSION=3.6 TAG_LATEST=
 
 # Update Docker Engine
 before_install:
@@ -24,20 +24,31 @@ before_install:
   - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-engine
 
 before_script:
-  - IMAGE_TAG="$IMAGE_USER/${VARIANT:+$VARIANT-}$IMAGE_NAME:$BASE_OS"
-  - DOCKERFILE="$BASE_OS/${VARIANT:-Dockerfile}${VARIANT:+.dockerfile}"
-  - echo "Building image $IMAGE_TAG from dockerfile $DOCKERFILE..."
+  - name="$IMAGE_USER/${VARIANT:-$BASE_OS}-base"
+  # Tag with the OS if this is not the default OS
+  - |
+    if [ -n "$VARIANT" ]; then
+      tag="$VERSION"
+      if [ "$BASE_OS" != "$DEFAULT_OS" ]; then
+        tag="${tag:+$tag-}$BASE_OS"
+      fi
+    fi
+  - image_tag="$name${tag:+:$tag}"
+  - dockerfile="$BASE_OS/${VARIANT:+$VARIANT/${VERSION:+$VERSION/}}Dockerfile"
+  # Parse version from the base image in the FROM directive
+  - version="$(awk '$1 == "FROM" { print $2 }' "$dockerfile" | grep -oE '\d+[-\.]\d+(\.\d+)*')"
+  - echo "Building image $image_tag from dockerfile $dockerfile with version $version..."
 script:
-  - docker build -t "$IMAGE_TAG" -f "$DOCKERFILE" .
+  - docker build --tag "$image_tag" --file "$dockerfile" "$BASE_OS"
 after_script:
   - docker images
 
 # Deploy to Docker Hub (default registry) using docker-ci-deploy
 before_deploy:
-  - pip install docker-ci-deploy
-  - TAGS="$BASE_OS${TAG_LATEST:+ latest}"
+  - pip install docker-ci-deploy==0.2.0
+  - docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASS"
 deploy:
   provider: script
-  script: docker-ci-deploy --tag $TAGS --login "$REGISTRY_USER:$REGISTRY_PASS" "$IMAGE_TAG"
+  script: dcd --tag-version $version --tag-semver ${TAG_LATEST:+--tag-latest} "$image_tag"
   on:
     branch: develop

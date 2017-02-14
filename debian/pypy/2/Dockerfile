@@ -9,8 +9,7 @@ ENV PIP_NO_CACHE_DIR="false" \
 RUN update-alternatives --install /usr/bin/python python /usr/local/bin/pypy 50
 
 # Install utility scripts
-COPY ./common/scripts /scripts
-COPY ./debian/scripts /scripts
+COPY scripts /scripts
 ENV PATH $PATH:/scripts
 
 ENV DINIT_VERSION="1.2.0" \

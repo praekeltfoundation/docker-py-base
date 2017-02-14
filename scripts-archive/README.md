@@ -12,3 +12,9 @@ This problem will only apply in certain circumstances when using Docker volumes.
 
 ##### Our solution:
 A *hack*. The [`create-volume-user.sh`](debian/create-volume-user.sh) script can create a user and group with UID/GID that match those of the volume owner. This must happen at container runtime as the UID/GID of the volume can't be known before the volume is mounted.
+
+### `CMD` instructions don't evaluate shell variables
+When using the `CMD` directive properly in its JSON array format (`CMD ["arg1", "arg2"]`), `$` variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
+
+#### Our solution:
+A Bash script ([`eval-args.sh`](common/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.

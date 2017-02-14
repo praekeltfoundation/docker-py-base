@@ -1,4 +1,4 @@
-FROM python:2.7.13-slim
+FROM python:3.6.0-slim
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
@@ -6,8 +6,7 @@ ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
 
 # Install utility scripts
-COPY ./common/scripts /scripts
-COPY ./debian/scripts /scripts
+COPY scripts /scripts
 ENV PATH $PATH:/scripts
 
 ENV DINIT_VERSION="1.2.0" \

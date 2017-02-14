@@ -2,8 +2,7 @@ FROM debian:8.7
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # Install utility scripts
-COPY ./common/scripts /scripts
-COPY ./debian/scripts /scripts
+COPY scripts /scripts
 ENV PATH $PATH:/scripts
 
 ENV DINIT_VERSION="1.2.0" \

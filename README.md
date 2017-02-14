@@ -51,12 +51,9 @@ It's quite easy to accidentally get Docker to run your containers with `/bin/sh 
 
 There is a subtle difference between the two forms of the [Dockerfile `CMD` directive](https://docs.docker.com/engine/reference/builder/#cmd). In the (easiest to write) form, `CMD command arg1`, the command is actually wrapped in `/bin/sh -c`. In the other form, `CMD ["command", "arg1"]`, the command is not wrapped and the entrypoint is used if it is set. **Always prefer the second form.**
 
-Another problem is that if the command is not wrapped in a shell, variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
-
 ##### Our solution:
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
 * Remember to [`exec`](http://www.grymoire.com/Unix/Sh.html#uh-72) processes launched by shell scripts.
-* A Bash script ([`eval-args.sh`](common/scripts/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
 
 ### Changing user at runtime
 By default, everything in Docker containers is run as the root user. While containers are relatively isolated from the host machine they run on, Docker doesn't make any guarantees about that isolation from a security perspective. It is considered a best practice to lower privileges within a container. Docker provides a mechanism to change users: the [`USER`](https://docs.docker.com/engine/reference/builder/#/user) Dockerfile command. Setting the `USER` results in all subsequent commands in the Dockerfile to be run under that user. The problem with this is that in practice one generally wants to perform actions that would require root permissions right up until the main container process is launched. For example, you might want to install some more packages, or the entrypoint script for your process might need to create a working directory for your process.

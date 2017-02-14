@@ -16,9 +16,8 @@ RUN set -x \
     && apk del ca-certificates curl
 
 # Install utility scripts
-COPY ./common/scripts /scripts
-# COPY ./alpine/scripts /scripts
-ENV PATH $PATH:/scripts
+# COPY scripts /scripts
+# ENV PATH $PATH:/scripts
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
