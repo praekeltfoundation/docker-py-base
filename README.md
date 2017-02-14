@@ -1,6 +1,8 @@
 # docker-base
 Dockerfiles for base images that make creating correct, minimal images for applications easier.
 
+> **NOTE:** The tags for these images have changed recently. The `praekeltfoundation/python3-base` tag is now defunct. Use the `praekeltfoundation/python-base:3` tag rather. Also, the `:debian` tags are no longer being updated and will be removed. Debian is the default OS for all images that don't include "alpine" in the tag.
+
 ## Images
 #### `praekeltfoundation/debian-base`/`alpine-base`
 Provides Debian and Alpine Linux base images with a few utility scripts and `dumb-init`.
