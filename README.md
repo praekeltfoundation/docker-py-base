@@ -1,32 +1,26 @@
-# dockerfiles
+# docker-base
 Dockerfiles for base images that make creating correct, minimal images for applications easier.
 
+> **NOTE:** The tags for these images have changed recently. The `praekeltfoundation/python3-base` tag is now defunct. Use the `praekeltfoundation/python-base:3` tag rather. Also, the `:debian` tags are no longer being updated and will be removed. Debian is the default OS for all images that don't include "alpine" in the tag.
+
 ## Images
-#### `praekeltfoundation/base`
+#### `praekeltfoundation/debian-base`/`alpine-base`
 Provides Debian and Alpine Linux base images with a few utility scripts and `dumb-init`.
 
 #### `praekeltfoundation/python-base`
-Provides Debian- and Alpine Linux-based Python 2 images with the same utility scripts and `dumb-init` setup as the `base` image. Also configures `pip` to not use a cache and to use the Praekelt Foundation Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
-
-#### `praekeltfoundation/python3-base`
-Same as the `python-base` image but with Python 3.
+Provides Debian- and Alpine Linux-based Python images with the same utility scripts and `dumb-init` setup as the `base` image. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/pypy-base`
 Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
 
 #### Tags
-In general, the images are tagged with their operating system, so `:alpine` or `:debian`. The `:latest` tags always point to the `:debian` images.
+Debian is the default operating system and `:latest` tags will point to the Debian variants of images. Alpine variants are tagged with `:alpine`.
 
 ### Building the images
-You can emulate what Travis does, changing `$BASE_OS` and `$VARIANT` for the image you want:
-```shell
-IMAGE_USER=praekeltfoundation IMAGE_NAME=base
-BASE_OS=debian VARIANT=python
+Images are built in the context of their OS directories. So you can run something like this to build, for example, the Alpine Python 2.7 image:
 
-IMAGE_TAG="$IMAGE_USER/${VARIANT:+$VARIANT-}$IMAGE_NAME:$BASE_OS"
-DOCKERFILE="$BASE_OS/${VARIANT:-Dockerfile}${VARIANT:+.dockerfile}"
-
-docker build -t "$IMAGE_TAG" -f "$DOCKERFILE" .
+```
+> $ docker build -t python-base:2.7-alpine -f alpine/python/2.7/Dockerfile alpine
 ```
 
 ## Common Docker problems
@@ -51,12 +45,9 @@ It's quite easy to accidentally get Docker to run your containers with `/bin/sh 
 
 There is a subtle difference between the two forms of the [Dockerfile `CMD` directive](https://docs.docker.com/engine/reference/builder/#cmd). In the (easiest to write) form, `CMD command arg1`, the command is actually wrapped in `/bin/sh -c`. In the other form, `CMD ["command", "arg1"]`, the command is not wrapped and the entrypoint is used if it is set. **Always prefer the second form.**
 
-Another problem is that if the command is not wrapped in a shell, variables aren't evaluated in the `CMD` instruction because there is no shell to ever resolve the variables' values.
-
 ##### Our solution:
 * **Always using the `CMD ["command", "arg1"]` `CMD` format.**
 * Remember to [`exec`](http://www.grymoire.com/Unix/Sh.html#uh-72) processes launched by shell scripts.
-* A Bash script ([`eval-args.sh`](common/scripts/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
 
 ### Changing user at runtime
 By default, everything in Docker containers is run as the root user. While containers are relatively isolated from the host machine they run on, Docker doesn't make any guarantees about that isolation from a security perspective. It is considered a best practice to lower privileges within a container. Docker provides a mechanism to change users: the [`USER`](https://docs.docker.com/engine/reference/builder/#/user) Dockerfile command. Setting the `USER` results in all subsequent commands in the Dockerfile to be run under that user. The problem with this is that in practice one generally wants to perform actions that would require root permissions right up until the main container process is launched. For example, you might want to install some more packages, or the entrypoint script for your process might need to create a working directory for your process.
