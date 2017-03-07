@@ -38,8 +38,10 @@ before_script:
   # Parse version from the base image in the FROM directive
   - version="$(awk '$1 == "FROM" { print $2 }' "$dockerfile" | grep -oP '\d+[-\.]\d+(\.\d+)*')"
   - echo "Building image $image_tag from dockerfile $dockerfile with version $version..."
+  # Pull existing image to use as cache
+  - docker pull "$image_tag"
 script:
-  - docker build --tag "$image_tag" --file "$dockerfile" "$BASE_OS"
+  - docker build --pull --cache-from "$image_tag" --tag "$image_tag" --file "$dockerfile" "$BASE_OS"
 after_script:
   - docker images
 
