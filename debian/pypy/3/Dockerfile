@@ -1,12 +1,14 @@
-FROM pypy:2-5.7.0-slim
+FROM pypy:3-5.7.0-slim
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
 
-# Make PyPy available at /usr/bin/python for compatibility
-RUN update-alternatives --install /usr/bin/python python /usr/local/bin/pypy 50
+# Make PyPy available as `pypy`, `python3`, and `python` for compatibility
+RUN update-alternatives --install /usr/local/bin/pypy pypy /usr/local/bin/pypy3 50 \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/pypy3 50 \
+    && update-alternatives --install /usr/bin/python python /usr/local/bin/pypy3 50
 
 # Install utility scripts
 COPY scripts /scripts
@@ -40,4 +42,4 @@ RUN set -x \
 
 # Set dinit as the default entrypoint
 ENTRYPOINT ["dinit"]
-CMD ["pypy"]
+CMD ["pypy3"]
