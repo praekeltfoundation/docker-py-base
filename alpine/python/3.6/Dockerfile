@@ -1,4 +1,4 @@
-FROM python:3.6.0-alpine
+FROM python:3.6.1-alpine
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # Install libffi as it is required by cffi and present in the Debian images
