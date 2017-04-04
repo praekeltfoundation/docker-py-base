@@ -1,5 +1,5 @@
-#!/bin/bash -e
-set -x
+#!/usr/bin/env bash
+set -xe
 
 # Install packages using apt-get without leaving a mess behind. Fetches and then
 # later removes package indexes and install files.

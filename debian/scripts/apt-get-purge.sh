@@ -1,5 +1,5 @@
-#!/bin/bash -e
-set -x
+#!/usr/bin/env bash
+set -xe
 
 # Remove packages and their configuration files.
 # Usage: apt-get-purge.sh [packages...]
