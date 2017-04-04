@@ -14,8 +14,5 @@ apt-get install -qy \
   -o APT::Install-Suggests=false \
   "$@"
 
-# Clean downloaded package files
-apt-get clean
-
 # Remove the package indexes
 rm -rf /var/lib/apt/lists/*
