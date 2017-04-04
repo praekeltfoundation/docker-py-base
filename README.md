@@ -7,7 +7,7 @@ Dockerfiles for base images that make creating correct, minimal images for Pytho
 
 ## Images
 #### `praekeltfoundation/python-base`
-Provides Debian- and Alpine Linux-based Python images with the some utility scripts, `dumb-init`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
+Provides Debian- and Alpine Linux-based Python images with some utility scripts, `dumb-init`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/pypy-base`
 Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
