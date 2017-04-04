@@ -1,4 +1,4 @@
-FROM pypy:3-5.7.0-slim
+FROM pypy:3-5.7.1-slim
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
