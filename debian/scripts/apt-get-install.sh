@@ -9,7 +9,7 @@ set -x
 apt-get update
 
 # Do the install
-apt-get install -qy \
+apt-get install -y \
   -o APT::Install-Recommends=false \
   -o APT::Install-Suggests=false \
   "$@"
