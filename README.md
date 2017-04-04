@@ -1,14 +1,12 @@
-# docker-base
-Dockerfiles for base images that make creating correct, minimal images for applications easier.
+# docker-py-base
+Dockerfiles for base images that make creating correct, minimal images for Python applications easier.
 
 > **NOTE:** The tags for these images have changed recently. The `praekeltfoundation/python3-base` tag is now defunct. Use the `praekeltfoundation/python-base:3` tag rather. Also, the `:debian` tags are no longer being updated and will be removed. Debian is the default OS for all images that don't include "alpine" in the tag.
+> **NOTE:** The `praekeltfoundation/debian-base` and `praekeltfoundation/alpine-base` images have been removed. Only images for Python applications are built from this repo.
 
 ## Images
-#### `praekeltfoundation/debian-base`/`alpine-base`
-Provides Debian and Alpine Linux base images with a few utility scripts and `dumb-init`.
-
 #### `praekeltfoundation/python-base`
-Provides Debian- and Alpine Linux-based Python images with the same utility scripts and `dumb-init` setup as the `base` image. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
+Provides Debian- and Alpine Linux-based Python images with the some utility scripts, `dumb-init`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/pypy-base`
 Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
