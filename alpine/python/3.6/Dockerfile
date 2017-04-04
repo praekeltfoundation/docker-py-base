@@ -9,14 +9,14 @@ RUN apk add --no-cache \
 # Install dinit (dumb-init)
 ENV DINIT_VERSION="1.2.0" \
     DINIT_SHA256="81231da1cd074fdc81af62789fead8641ef3f24b6b07366a1c34e5b059faf363"
-RUN set -x \
-    && apk add --no-cache curl \
-    && DINIT_FILE="dumb-init_${DINIT_VERSION}_amd64" \
-    && curl -sSL -o /usr/bin/dumb-init "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/$DINIT_FILE" \
-    && echo "$DINIT_SHA256 */usr/bin/dumb-init" | sha256sum -c - \
-    && chmod +x /usr/bin/dumb-init \
-    && ln -s /usr/bin/dumb-init /usr/local/bin/dinit \
-    && apk del curl
+RUN set -xe; \
+    apk add --no-cache wget; \
+    wget -O dumb-init "https://github.com/Yelp/dumb-init/releases/download/v$DINIT_VERSION/dumb-init_${DINIT_VERSION}_amd64"; \
+    echo "$DINIT_SHA256 *dumb-init" | sha256sum -c -; \
+    chmod +x dumb-init; \
+    mv dumb-init /usr/bin/dumb-init; \
+    ln -s /usr/bin/dumb-init /usr/local/bin/dinit; \
+    apk del wget
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
