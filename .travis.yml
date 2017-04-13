@@ -46,4 +46,4 @@ deploy:
   provider: script
   script: dcd --tag-version $version --tag-semver ${TAG_LATEST:+--tag-latest} "$image_tag"
   on:
-    branch: develop
+    branch: master

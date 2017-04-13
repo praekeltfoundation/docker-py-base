@@ -1,4 +1,6 @@
 # docker-py-base
+[![Build Status](https://img.shields.io/travis/praekeltfoundation/docker-py-base/master.svg?style=flat-square)](https://travis-ci.org/praekeltfoundation/docker-py-base)
+
 Dockerfiles for base images that make creating correct, minimal images for Python applications easier.
 
 > **NOTE:** The tags for these images have changed recently. The `praekeltfoundation/python3-base` tag is now defunct. Use the `praekeltfoundation/python-base:3` tag rather. Also, the `:debian` tags are no longer being updated and will be removed. Debian is the default OS for all images that don't include "alpine" in the tag.
@@ -7,9 +9,13 @@ Dockerfiles for base images that make creating correct, minimal images for Pytho
 
 ## Images
 #### `praekeltfoundation/python-base`
+[![Docker Pulls](https://img.shields.io/docker/pulls/praekeltfoundation/python-base.svg?style=flat-square)](https://hub.docker.com/r/praekeltfoundation/python-base/)
+
 Provides Debian- and Alpine Linux-based Python images with some utility scripts, `dumb-init`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/pypy-base`
+[![Docker Pulls](https://img.shields.io/docker/pulls/praekeltfoundation/pypy-base.svg?style=flat-square)](https://hub.docker.com/r/praekeltfoundation/pypy-base/)
+
 Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
 
 #### Tags

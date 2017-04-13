@@ -1,7 +1,7 @@
-#!/bin/bash -e
-set -x
+#!/usr/bin/env bash
+set -xe
 
 # Remove packages and their configuration files.
 # Usage: apt-get-purge.sh [packages...]
 
-apt-get purge -qy --auto-remove "$@"
+apt-get purge -y --auto-remove "$@"
