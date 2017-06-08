@@ -51,6 +51,6 @@ RUN set -xe; \
     \
     apt-get-purge.sh wget
 
-# Set dinit as the default entrypoint
+# Set tini as the default entrypoint
 ENTRYPOINT ["tini"]
 CMD ["pypy3"]
