@@ -11,7 +11,7 @@ Dockerfiles for base images that make creating correct, minimal images for Pytho
 #### `praekeltfoundation/python-base`
 [![Docker Pulls](https://img.shields.io/docker/pulls/praekeltfoundation/python-base.svg?style=flat-square)](https://hub.docker.com/r/praekeltfoundation/python-base/)
 
-Provides Debian- and Alpine Linux-based Python images with some utility scripts, `dumb-init`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
+Provides Debian- and Alpine Linux-based Python images with some utility scripts, `tini`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 #### `praekeltfoundation/pypy-base`
 [![Docker Pulls](https://img.shields.io/docker/pulls/praekeltfoundation/pypy-base.svg?style=flat-square)](https://hub.docker.com/r/praekeltfoundation/pypy-base/)
@@ -41,7 +41,9 @@ Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it ea
 For a complete explanation of this problem see [this](https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) excellent blog post by Phusion. Suffice to say, many programs expect the system they're running on to have an init system that will manage/clean up child processes but most Docker containers don't have an init system.
 
 ##### Our solution:
-Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use the (badly named) [`dumb-init`](https://github.com/Yelp/dumb-init) by Yelp.
+Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use [`tini`](https://github.com/krallin/tini).
+
+> **Note:** `tini` is built-in and runs by default in Docker 1.13.0+. Once all our infrastructure moves to a new-enough version of Docker, we will remove `tini` from these images.
 
 This program is the default entrypoint for all the images, so using it should be automatic most of the time - simply specify a `CMD []` in your Dockerfile.
 
@@ -75,7 +77,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 `docker-entrypoint.sh`:
 ```shell
-#!/usr/bin/dumb-init /bin/sh
+#!/usr/local/sbin/tini /bin/sh
 # ...
 
 exec su-exec vumi \
