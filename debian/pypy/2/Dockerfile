@@ -27,9 +27,9 @@ RUN set -xe; \
     gpg --batch --verify gosu.asc gosu; \
     rm -r "$GNUPGHOME" gosu.asc; \
     chmod +x gosu; \
-    mv gosu /usr/local/bin/gosu; \
+    mv gosu /usr/local/sbin/gosu; \
 # Link `gosu` as `su-exec` for compatibility with Alpine Linux
-    ln -s /usr/local/bin/gosu /usr/local/bin/su-exec; \
+    ln -s /usr/local/sbin/gosu /usr/local/sbin/su-exec; \
     su-exec nobody true; \
     \
 # Install tini
