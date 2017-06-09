@@ -43,7 +43,7 @@ For a complete explanation of this problem see [this](https://blog.phusion.nl/20
 ##### Our solution:
 Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use [`tini`](https://github.com/krallin/tini).
 
-> **Note:** `tini` is built-in and runs by default in Docker 1.13.0+. Once all our infrastructure moves to a new-enough version of Docker, we will remove `tini` from these images.
+> **Note:** `tini` is built-in to Docker 1.13.0+. It can be enabled by passing `--init` to `dockerd` or `docker run`. Once all our infrastructure moves to a new-enough version of Docker, we may enable that and remove `tini` from these images.
 
 This program is the default entrypoint for all the images, so using it should be automatic most of the time - simply specify a `CMD []` in your Dockerfile.
 
