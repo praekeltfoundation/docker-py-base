@@ -1,9 +1,6 @@
 FROM python:3.6.1-alpine
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
-# Install libffi as it is small and means we get working cffi
-RUN apk add --no-cache libffi
-
 # Install su-exec and tini
 RUN set -xe; \
     apk add --no-cache su-exec tini; \
