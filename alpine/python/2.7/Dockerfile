@@ -1,4 +1,4 @@
-FROM python:2.7.13-alpine
+FROM python:2.7.13-alpine3.6
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # Install libffi as it is small and means we get working cffi
@@ -20,7 +20,7 @@ RUN set -xe; \
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
-    PIP_EXTRA_INDEX_URL="https://alpine-3-4.wheelhouse.praekelt.org/simple"
+    PIP_EXTRA_INDEX_URL="https://alpine-3-6.wheelhouse.praekelt.org/simple"
 
 # Install utility scripts
 COPY scripts /scripts
