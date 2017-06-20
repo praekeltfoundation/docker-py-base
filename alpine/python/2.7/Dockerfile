@@ -10,8 +10,7 @@ RUN set -xe; \
     mkdir /usr/local/sbin; \
 # Link `su-exec` as `gosu` for compatibility with Debian
     ln -s "$(which su-exec)" /usr/local/sbin/gosu; \
-# Remove the script at /usr/bin/tini warning that tini is really at /sbin/tini
-    rm /usr/bin/tini; \
+    gosu nobody true; \
 # Link `tini` as `dumb-init` and `dinit` for compatibility with older images
     ln -s "$(which tini)" /usr/local/sbin/dumb-init; \
     dumb-init -s -- true; \
