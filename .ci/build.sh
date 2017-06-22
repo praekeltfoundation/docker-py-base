@@ -20,7 +20,7 @@ version="$1"; shift || usage_error 'missing version'
 
 tag="${IMAGE_NAMESPACE}/${variant}-base:${version}"
 if [[ "$base_os" != "$DEFAULT_OS" ]]; then
-  tag="${tag}-${$base_os}"
+	tag="${tag}-${$base_os}"
 fi
 
 # Pull the existing image for caching
