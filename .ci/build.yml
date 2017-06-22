@@ -1,0 +1,19 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: docker
+    tag: 17.05-dind
+
+inputs:
+  - name: git-py-base
+  - name: docker-python
+
+outputs:
+  - name: docker-py-base-((base_os))-((variant))-((version))-tar
+    path: git-py-base/((base_os))-((variant))-((version)).tar
+
+run:
+  path: git-py-base/ci/build.sh
+  args: [((base_os)), ((variant)), ((version))]
