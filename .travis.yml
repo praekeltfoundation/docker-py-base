@@ -20,7 +20,7 @@ env:
 # Update Docker Engine
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-engine
+  - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-ce
 
 before_script:
   - name="$IMAGE_USER/$VARIANT-base"
