@@ -26,5 +26,5 @@ COPY scripts /scripts
 ENV PATH $PATH:/scripts
 
 # Set tini as the default entrypoint
-ENTRYPOINT ["tini"]
+ENTRYPOINT ["tini", "--"]
 CMD ["python"]

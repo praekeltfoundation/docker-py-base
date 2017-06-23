@@ -50,5 +50,5 @@ RUN set -xe; \
     apt-get-purge.sh wget
 
 # Set tini as the default entrypoint
-ENTRYPOINT ["tini"]
+ENTRYPOINT ["tini", "--"]
 CMD ["pypy"]

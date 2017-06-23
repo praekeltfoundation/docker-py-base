@@ -46,6 +46,6 @@ RUN set -xe; \
     \
     apt-get-purge.sh wget
 
-# Set dinit as the default entrypoint
-ENTRYPOINT ["dinit"]
+# Set tini as the default entrypoint
+ENTRYPOINT ["tini", "--"]
 CMD ["python"]
