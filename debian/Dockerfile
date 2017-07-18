@@ -1,12 +1,10 @@
-FROM pypy:2-5.8.0-slim
+ARG FROM_IMAGE=python:3-slim
+FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
-
-# Make PyPy available at /usr/bin/python for compatibility
-RUN update-alternatives --install /usr/bin/python python /usr/local/bin/pypy 50
 
 # Install utility scripts
 COPY scripts /scripts
@@ -51,4 +49,4 @@ RUN set -xe; \
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
-CMD ["pypy"]
+# CMD set in base image

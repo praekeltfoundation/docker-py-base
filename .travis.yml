@@ -10,31 +10,33 @@ env:
     - REGISTRY_USER=praekeltorgdeploy
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
   matrix:
-    - BASE_OS=alpine VARIANT=python VERSION=2.7 TAG_LATEST=1
-    - BASE_OS=alpine VARIANT=python VERSION=3.6 TAG_LATEST=
-    - BASE_OS=debian VARIANT=pypy   VERSION=2   TAG_LATEST=1
-    - BASE_OS=debian VARIANT=pypy   VERSION=3   TAG_LATEST=
-    - BASE_OS=debian VARIANT=python VERSION=2.7 TAG_LATEST=1
-    - BASE_OS=debian VARIANT=python VERSION=3.6 TAG_LATEST=
+    - BASE_OS=alpine FROM_IMAGE=python:2.7.13-alpine3.6 TAG_LATEST=1
+    - BASE_OS=alpine FROM_IMAGE=python:3.6.1-alpine3.6  TAG_LATEST=
+    - BASE_OS=debian FROM_IMAGE=pypy:2-5.8.0-slim       TAG_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=pypy:3-5.8.0-slim       TAG_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:2.7.13-slim      TAG_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=python:3.6.1-slim       TAG_LATEST=
 
-# Update Docker Engine
+# Update Docker Engine (need at least 17.05.0 for ARG in FROM)
 before_install:
   - sudo apt-get update
   - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-ce
 
 before_script:
-  - name="$IMAGE_USER/$VARIANT-base"
+  # Find the Python: 'python' or 'pypy'
+  - python="${FROM_IMAGE%:*}"
+  # Find the full version: '2-5.8.0', '2.7.13'...
+  - version="$(echo "$FROM_IMAGE" | grep -oP '(\d+-)?\d+(\.\d+)*' | head -1)"
+  # Find the major Python version: '2-5.8.0' => '2', '2.7.13' => '2.7'
+  - maj_version="$(echo "${version%-*}" | grep -oP '^\d+(\.\d+)?')"
   # Tag with the OS if this is not the default OS
-  - tag="$VERSION"; if [ "$BASE_OS" != "$DEFAULT_OS" ]; then tag="$tag-$BASE_OS"; fi
-  - image_tag="$name:$tag"
-  - dockerfile="$BASE_OS/$VARIANT/$VERSION/Dockerfile"
-  # Parse version from the base image in the FROM directive
-  - version="$(awk '$1 == "FROM" { print $2 }' "$dockerfile" | grep -oP '\d+[-\.]\d+(\.\d+)*' | head -1)"
-  - echo "Building image $image_tag from dockerfile $dockerfile with version $version..."
+  - tag="$maj_version"; if [ "$BASE_OS" != "$DEFAULT_OS" ]; then tag="$tag-$BASE_OS"; fi
+  - image_tag="$IMAGE_USER/${python}-base:$tag"
+  - echo "Building image '$image_tag' based on '$FROM_IMAGE' with version '$version'..."
   # Pull existing image to use as cache
   - docker pull "$image_tag" || true
 script:
-  - docker build --pull --cache-from "$image_tag" --tag "$image_tag" --file "$dockerfile" "$BASE_OS"
+  - docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
 after_script:
   - docker images
 

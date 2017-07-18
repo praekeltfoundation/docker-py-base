@@ -1,4 +1,5 @@
-FROM python:3.6.1-alpine3.6
+ARG FROM_TAG=python:3-alpine3.6
+FROM $FROM_TAG
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # Install su-exec and tini
@@ -24,4 +25,4 @@ ENV PATH $PATH:/scripts
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
-CMD ["python"]
+# CMD set in base image
