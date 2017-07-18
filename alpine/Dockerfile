@@ -1,5 +1,5 @@
-ARG FROM_TAG=python:3-alpine3.6
-FROM $FROM_TAG
+ARG FROM_IMAGE=python:3-alpine3.6
+FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # Install su-exec and tini
