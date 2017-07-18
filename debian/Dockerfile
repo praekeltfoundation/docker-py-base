@@ -1,12 +1,10 @@
-FROM pypy:2-5.8.0-slim
+ARG FROM_IMAGE=python:3-slim
+FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
 ENV PIP_NO_CACHE_DIR="false" \
     PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
-
-# Make PyPy available at /usr/bin/python for compatibility
-RUN update-alternatives --install /usr/bin/python python /usr/local/bin/pypy 50
 
 # Install utility scripts
 COPY scripts /scripts
@@ -51,4 +49,10 @@ RUN set -xe; \
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
-CMD ["pypy"]
+# HACK: detect which Python we have and run it
+CMD ["/bin/sh", "-ec", \
+     "for py in pypy3 pypy python3 python2; do \
+         if PATH=/usr/local/bin command -v \"$py\"  > /dev/null; then \
+             exec \"$py\"; \
+         fi; \
+      done"]
