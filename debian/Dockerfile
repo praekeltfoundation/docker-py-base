@@ -49,4 +49,10 @@ RUN set -xe; \
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
-# CMD set in base image
+# HACK: detect which Python we have and run it
+CMD ["/bin/sh", "-ec", \
+     "for py in pypy3 pypy python3 python2; do \
+         if PATH=/usr/local/bin command -v \"$py\"  > /dev/null; then \
+             exec \"$py\"; \
+         fi; \
+      done"]
