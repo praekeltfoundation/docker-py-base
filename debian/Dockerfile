@@ -1,4 +1,5 @@
-FROM python:3.6.1-slim
+ARG FROM_IMAGE=python:3-slim
+FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
 # pip: Disable cache and use Praekelt Foundation Python Package Index
@@ -48,4 +49,10 @@ RUN set -xe; \
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
-CMD ["python"]
+# HACK: detect which Python we have and run it
+CMD ["/bin/sh", "-ec", \
+     "for py in pypy3 pypy python3 python2; do \
+         if PATH=/usr/local/bin command -v \"$py\"  > /dev/null; then \
+             exec \"$py\"; \
+         fi; \
+      done"]
