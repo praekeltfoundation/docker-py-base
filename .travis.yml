@@ -3,6 +3,11 @@ language: python
 services:
   - docker
 
+# Only build master. PRs still get built.
+branches:
+  only:
+    - master
+
 env:
   global:
     - IMAGE_USER=praekeltfoundation
