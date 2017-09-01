@@ -12,6 +12,7 @@ apt-get update
 apt-get install -y \
   -o APT::Install-Recommends=false \
   -o APT::Install-Suggests=false \
+  -o Dpkg::Options::="--force-confnew" \
   "$@"
 
 # Remove the package indexes
