@@ -15,9 +15,12 @@ RUN set -xe; \
     ln -s "$(which tini)" /usr/local/sbin/dinit; \
     dinit -s -- true
 
-# pip: Disable cache and use Praekelt Foundation Python Package Index
-ENV PIP_NO_CACHE_DIR="false" \
-    PIP_EXTRA_INDEX_URL="https://alpine-3-6.wheelhouse.praekelt.org/simple"
+# pip: Disable cache and use Praekelt.org Python Package Index
+RUN set -ex; \
+    codename="alpine-$(cat /etc/alpine-release | grep -oE ^[0-9]+\.[0-9]+ | tr '.' '-')"; \
+    echo '[global]' >> /etc/pip.conf; \
+    echo 'no-cache-dir = false' >> /etc/pip.conf; \
+    echo "extra-index-url = https://$codename.wheelhouse.praekelt.org/simple" >> /etc/pip.conf
 
 # Install utility scripts
 COPY scripts /scripts

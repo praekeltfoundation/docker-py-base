@@ -11,16 +11,17 @@ branches:
 env:
   global:
     - IMAGE_USER=praekeltfoundation
-    - DEFAULT_OS=debian
     - REGISTRY_USER=praekeltorgdeploy
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
   matrix:
-    - BASE_OS=alpine FROM_IMAGE=python:2.7.14-alpine3.6 TAG_LATEST=1
-    - BASE_OS=alpine FROM_IMAGE=python:3.6.3-alpine3.6  TAG_LATEST=
-    - BASE_OS=debian FROM_IMAGE=pypy:2-5.9.0-slim       TAG_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=pypy:3-5.9.0-slim       TAG_LATEST=
-    - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim      TAG_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:3.6.3-slim       TAG_LATEST=
+    - BASE_OS=alpine FROM_IMAGE=python:2.7.14-alpine3.6    TAGS="alpine3.6 alpine" VERSION_LATEST=1
+    - BASE_OS=alpine FROM_IMAGE=python:3.6.3-alpine3.6     TAGS="alpine3.6 alpine" VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=pypy:2-5.9.0-slim          TAGS="jessie latest"    VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=pypy:3-5.9.0-slim          TAGS="jessie latest"    VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-stretch TAGS="stretch"          VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=python:3.6.3-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:3.6.3-slim-stretch  TAGS="stretch"          VERSION_LATEST=
 
 # Update Docker Engine (need at least 17.05.0 for ARG in FROM)
 before_install:
@@ -34,8 +35,7 @@ before_script:
   - version="$(echo "$FROM_IMAGE" | grep -oP '(\d+-)?\d+(\.\d+)*' | head -1)"
   # Find the major Python version: '2-5.8.0' => '2', '2.7.13' => '2.7'
   - maj_version="$(echo "${version%-*}" | grep -oP '^\d+(\.\d+)?')"
-  # Tag with the OS if this is not the default OS
-  - tag="$maj_version"; if [ "$BASE_OS" != "$DEFAULT_OS" ]; then tag="$tag-$BASE_OS"; fi
+  - tags=($TAGS); tag="$maj_version-${tags[0]}"
   - image_tag="$IMAGE_USER/${python}-base:$tag"
   - echo "Building image '$image_tag' based on '$FROM_IMAGE' with version '$version'..."
   # Pull existing image to use as cache
@@ -47,10 +47,10 @@ after_script:
 
 # Deploy to Docker Hub (default registry) using docker-ci-deploy
 before_deploy:
-  - pip install docker-ci-deploy==0.2.0
+  - pip install docker-ci-deploy==0.3.0
   - docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASS"
 deploy:
   provider: script
-  script: dcd --tag-version $version --tag-semver ${TAG_LATEST:+--tag-latest} "$image_tag"
+  script: dcd --tag $TAGS --version $version --version-semver ${VERSION_LATEST:+--version-latest} "$image_tag"
   on:
     branch: master
