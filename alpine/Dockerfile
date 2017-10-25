@@ -18,7 +18,7 @@ RUN set -xe; \
 # pip: Disable cache and use Praekelt.org Python Package Index
 RUN set -ex; \
     codename="alpine-$(cat /etc/alpine-release | grep -oE ^[0-9]+\.[0-9]+ | tr '.' '-')"; \
-    echo '[global]' >> /etc/pip.conf; \
+    echo '[global]' > /etc/pip.conf; \
 # `no-cache-dir = false` is not intuitive--it's translated to a CLI option and does disable the cache
     echo 'no-cache-dir = false' >> /etc/pip.conf; \
     echo "extra-index-url = https://$codename.wheelhouse.praekelt.org/simple" >> /etc/pip.conf
