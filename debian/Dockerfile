@@ -6,6 +6,7 @@ LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 RUN set -ex; \
     codename="$(. /etc/os-release; echo $VERSION | grep -oE [a-z]+)"; \
     echo '[global]' >> /etc/pip.conf; \
+# `no-cache-dir = false` is not intuitive--it's translated to a CLI option and does disable the cache
     echo 'no-cache-dir = false' >> /etc/pip.conf; \
     echo "extra-index-url = https://$codename.wheelhouse.praekelt.org/simple" >> /etc/pip.conf
 
