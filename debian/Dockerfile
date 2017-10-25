@@ -1,10 +1,14 @@
-ARG FROM_IMAGE=python:3-slim
+ARG FROM_IMAGE=python:3-slim-stretch
 FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
-# pip: Disable cache and use Praekelt Foundation Python Package Index
-ENV PIP_NO_CACHE_DIR="false" \
-    PIP_EXTRA_INDEX_URL="https://jessie.wheelhouse.praekelt.org/simple"
+# pip: Disable cache and use Praekelt.org Python Package Index
+RUN set -ex; \
+    codename="$(. /etc/os-release; echo $VERSION | grep -oE [a-z]+)"; \
+    echo '[global]' > /etc/pip.conf; \
+# `no-cache-dir = false` is not intuitive--it's translated to a CLI option and does disable the cache
+    echo 'no-cache-dir = false' >> /etc/pip.conf; \
+    echo "extra-index-url = https://$codename.wheelhouse.praekelt.org/simple" >> /etc/pip.conf
 
 # Install utility scripts
 COPY scripts /scripts
@@ -15,7 +19,12 @@ ENV GOSU_VERSION="1.10" \
     TINI_VERSION="0.16.1" \
     TINI_GPG_KEY="595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7"
 RUN set -xe; \
-    apt-get-install.sh wget; \
+    fetchDeps=" \
+        wget \
+# dirmngr/gnupg2 not installed by defalt on Stretch
+        $(command -v dirmngr > /dev/null || echo 'dirmngr gnupg2') \
+    "; \
+    apt-get-install.sh $fetchDeps; \
     \
 # Install gosu
     wget -O gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64"; \
@@ -23,7 +32,7 @@ RUN set -xe; \
     export GNUPGHOME="$(mktemp -d)"; \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_GPG_KEY"; \
     gpg --batch --verify gosu.asc gosu; \
-    rm -r "$GNUPGHOME" gosu.asc; \
+    rm -rf "$GNUPGHOME" gosu.asc; \
     chmod +x gosu; \
     mv gosu /usr/local/sbin/gosu; \
 # Link `gosu` as `su-exec` for compatibility with Alpine Linux
@@ -36,7 +45,7 @@ RUN set -xe; \
     export GNUPGHOME="$(mktemp -d)"; \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$TINI_GPG_KEY"; \
     gpg --batch --verify tini.asc tini; \
-    rm -r "$GNUPGHOME" tini.asc; \
+    rm -rf "$GNUPGHOME" tini.asc; \
     chmod +x tini; \
     mv tini /usr/local/sbin/tini; \
 # Link `tini` as `dumb-init` and `dinit` for compatibility with older images
@@ -45,7 +54,7 @@ RUN set -xe; \
     ln -s /usr/local/sbin/tini /usr/local/sbin/dinit; \
     dinit -s -- true; \
     \
-    apt-get-purge.sh wget
+    apt-get-purge.sh $fetchDeps
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
