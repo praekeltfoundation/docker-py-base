@@ -21,8 +21,8 @@ ENV GOSU_VERSION="1.10" \
 RUN set -xe; \
     fetchDeps=" \
         wget \
-# dirmngr/gnupg2 not installed by defalt on Stretch
-        $(command -v dirmngr > /dev/null || echo 'dirmngr gnupg2') \
+# GPG not available by default on Stretch
+        $(command -v gpg > /dev/null || echo 'dirmngr gnupg') \
     "; \
     apt-get-install.sh $fetchDeps; \
     \
