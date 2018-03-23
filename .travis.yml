@@ -1,7 +1,7 @@
 sudo: required
+group: trusty_latest
+services: docker
 language: python
-services:
-  - docker
 
 # Only build master. PRs still get built.
 branches:
@@ -18,17 +18,12 @@ env:
     - BASE_OS=alpine FROM_IMAGE=python:3.6.4-alpine3.6     TAGS="alpine3.6"        VERSION_LATEST=
     - BASE_OS=alpine FROM_IMAGE=python:2.7.14-alpine3.7    TAGS="alpine3.7 alpine" VERSION_LATEST=1
     - BASE_OS=alpine FROM_IMAGE=python:3.6.4-alpine3.7     TAGS="alpine3.7 alpine" VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=pypy:2-5.9.0-slim          TAGS="jessie latest"    VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=pypy:3-5.9.0-slim          TAGS="jessie latest"    VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=pypy:2-5.10.0-slim         TAGS="jessie latest"    VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=pypy:3-5.10.1-slim         TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-stretch TAGS="stretch"          VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:3.6.4-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:3.6.4-slim-stretch  TAGS="stretch"          VERSION_LATEST=
-
-# Update Docker Engine (need at least 17.05.0 for ARG in FROM)
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-ce
 
 before_script:
   # Find the Python: 'python' or 'pypy'
@@ -43,7 +38,7 @@ before_script:
   # Pull existing image to use as cache
   - docker pull "$image_tag" || true
 script:
-  - docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
+  - travis_retry docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
 after_script:
   - docker images
 
@@ -56,3 +51,10 @@ deploy:
   script: dcd --tag $TAGS --version $version --version-semver ${VERSION_LATEST:+--version-latest} "$image_tag"
   on:
     branch: master
+
+notifications:
+  slack:
+    rooms:
+      # praekeltfoundation:<token>#docker
+      - secure: "Bd6P16v4xi4UCiqWYAJTBGRlIj/da0KqAeXYUM6VuZnxefPrqOdYM3dlJbdbqIsGKILG2eNFJvyujaAaUZAe4XZudRcXb/IWADBFszllWDc5rNAw12/kLd8iWFVZq03pwokZPZh8kxqjCTpSQQP1DQhBFZXIUApJKSuuwtdWoxXXG3hb6v7Uh4y5HT9rMeHUPx7F/86i7QiXs3o4280dzYANjpN88i7PRnk6eQLEwxWHaXEaCXeDLD6nOdSaZrD4C9Im/gD+EckPFrMeXQCW8FNhk4ZGDMiDjG9YzwX+PoVN0KfHvXjUe78Iy2Yul8vLV6GVURZC8Ul65+DlHFRPhUu/1cjeQCMeI5/eRYSFwy9VDqLWvs4sokk0mApWHwJILr/trrkmEOKXW1OysWAPwcbCi/g27wiVJtj9Wz9f+afM9rVS6U2/FqGLCZsKnwDsF942fMFQ6SqTXSiK58gJg7Bv1z4yOpog3aL9I3qAUaUw0xOqrSh96ZgVoeUfh2lBZ6HhKOBGIZaiQ6pfwHxmKeFpVawngvdP+/3tx/2W1fHrFLk7o9VJqU9RMR9XWvyo5Jq5ZXZsmfH3JWR9Vo9fWp3amw4udVGGe7NhqckqrPGe/uAzJKR2qV3+g1PQ7lgcfgAQ/qbJxYoH8soEeob+ojiuOEu0+2MisRWvuQkXvIc="
+    on_pull_requests: false
