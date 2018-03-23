@@ -38,7 +38,7 @@ before_script:
   # Pull existing image to use as cache
   - docker pull "$image_tag" || true
 script:
-  - docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
+  - travis_retry docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
 after_script:
   - docker images
 
