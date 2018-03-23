@@ -56,3 +56,10 @@ deploy:
   script: dcd --tag $TAGS --version $version --version-semver ${VERSION_LATEST:+--version-latest} "$image_tag"
   on:
     branch: master
+
+notifications:
+  slack:
+    rooms:
+      # praekeltfoundation:<token>#docker
+      - secure: "Bd6P16v4xi4UCiqWYAJTBGRlIj/da0KqAeXYUM6VuZnxefPrqOdYM3dlJbdbqIsGKILG2eNFJvyujaAaUZAe4XZudRcXb/IWADBFszllWDc5rNAw12/kLd8iWFVZq03pwokZPZh8kxqjCTpSQQP1DQhBFZXIUApJKSuuwtdWoxXXG3hb6v7Uh4y5HT9rMeHUPx7F/86i7QiXs3o4280dzYANjpN88i7PRnk6eQLEwxWHaXEaCXeDLD6nOdSaZrD4C9Im/gD+EckPFrMeXQCW8FNhk4ZGDMiDjG9YzwX+PoVN0KfHvXjUe78Iy2Yul8vLV6GVURZC8Ul65+DlHFRPhUu/1cjeQCMeI5/eRYSFwy9VDqLWvs4sokk0mApWHwJILr/trrkmEOKXW1OysWAPwcbCi/g27wiVJtj9Wz9f+afM9rVS6U2/FqGLCZsKnwDsF942fMFQ6SqTXSiK58gJg7Bv1z4yOpog3aL9I3qAUaUw0xOqrSh96ZgVoeUfh2lBZ6HhKOBGIZaiQ6pfwHxmKeFpVawngvdP+/3tx/2W1fHrFLk7o9VJqU9RMR9XWvyo5Jq5ZXZsmfH3JWR9Vo9fWp3amw4udVGGe7NhqckqrPGe/uAzJKR2qV3+g1PQ7lgcfgAQ/qbJxYoH8soEeob+ojiuOEu0+2MisRWvuQkXvIc="
+    on_pull_requests: false
