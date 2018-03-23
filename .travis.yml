@@ -1,7 +1,7 @@
 sudo: required
+group: trusty_latest
+services: docker
 language: python
-services:
-  - docker
 
 # Only build master. PRs still get built.
 branches:
@@ -24,11 +24,6 @@ env:
     - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-stretch TAGS="stretch"          VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:3.6.4-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:3.6.4-slim-stretch  TAGS="stretch"          VERSION_LATEST=
-
-# Update Docker Engine (need at least 17.05.0 for ARG in FROM)
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -qy -o Dpkg::Options::="--force-confold" docker-ce
 
 before_script:
   # Find the Python: 'python' or 'pypy'
