@@ -14,14 +14,12 @@ env:
     - REGISTRY_USER=praekeltorgdeploy
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
   matrix:
-    - BASE_OS=alpine FROM_IMAGE=python:2.7.14-alpine3.6    TAGS="alpine3.6"        VERSION_LATEST=1
-    - BASE_OS=alpine FROM_IMAGE=python:3.6.5-alpine3.6     TAGS="alpine3.6"        VERSION_LATEST=
-    - BASE_OS=alpine FROM_IMAGE=python:2.7.14-alpine3.7    TAGS="alpine3.7 alpine" VERSION_LATEST=1
+    - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.7    TAGS="alpine3.7 alpine" VERSION_LATEST=1
     - BASE_OS=alpine FROM_IMAGE=python:3.6.5-alpine3.7     TAGS="alpine3.7 alpine" VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=pypy:2-5.10.0-slim         TAGS="jessie latest"    VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=pypy:3-5.10.1-slim         TAGS="jessie latest"    VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:2.7.14-slim-stretch TAGS="stretch"          VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch TAGS="stretch"          VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:3.6.5-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:3.6.5-slim-stretch  TAGS="stretch"          VERSION_LATEST=
 
@@ -45,7 +43,7 @@ after_script:
 # Deploy to Docker Hub (default registry) using docker-ci-deploy
 before_deploy:
   - pip install docker-ci-deploy==0.3.0
-  - docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASS"
+  - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
 deploy:
   provider: script
   script: dcd --tag $TAGS --version $version --version-semver ${VERSION_LATEST:+--version-latest} "$image_tag"
