@@ -18,8 +18,8 @@ env:
     - BASE_OS=alpine FROM_IMAGE=python:3.6.5-alpine3.6     TAGS="alpine3.6"        VERSION_LATEST=
     - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.7    TAGS="alpine3.7 alpine" VERSION_LATEST=1
     - BASE_OS=alpine FROM_IMAGE=python:3.6.5-alpine3.7     TAGS="alpine3.7 alpine" VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=pypy:2-5.10.0-slim         TAGS="jessie latest"    VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=pypy:3-5.10.1-slim         TAGS="jessie latest"    VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=1
+    - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch TAGS="stretch"          VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:3.6.5-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
