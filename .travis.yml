@@ -43,7 +43,7 @@ after_script:
 # Deploy to Docker Hub (default registry) using docker-ci-deploy
 before_deploy:
   - pip install docker-ci-deploy==0.3.0
-  - docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASS"
+  - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
 deploy:
   provider: script
   script: dcd --tag $TAGS --version $version --version-semver ${VERSION_LATEST:+--version-latest} "$image_tag"
