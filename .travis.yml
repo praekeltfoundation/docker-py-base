@@ -20,8 +20,8 @@ env:
     - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch TAGS="stretch"          VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:3.6.5-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=python:3.6.5-slim-stretch  TAGS="stretch"          VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  TAGS="stretch"          VERSION_LATEST=
 
 before_script:
   # Find the Python: 'python' or 'pypy'
