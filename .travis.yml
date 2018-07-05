@@ -47,7 +47,7 @@ before_deploy:
   - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
 deploy:
   provider: script
-  script: dcd -t $TAGS -v $version -S ${VERSION_LATEST:+-L} -P ${SEMVER_PRECISION:-1} "$image_tag"
+  script: dcd -t $TAGS -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${VERSION_LATEST:+-L} "$image_tag"
   on:
     branch: master
 
