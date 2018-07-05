@@ -20,8 +20,9 @@ env:
     - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch TAGS="stretch"          VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  TAGS="stretch"          VERSION_LATEST=
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  TAGS="stretch"          VERSION_LATEST=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  TAGS="stretch latest"   VERSION_LATEST=
 
 before_script:
   # Find the Python: 'python' or 'pypy'
@@ -46,7 +47,7 @@ before_deploy:
   - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
 deploy:
   provider: script
-  script: dcd --tag $TAGS --version $version --version-semver ${VERSION_LATEST:+--version-latest} "$image_tag"
+  script: dcd -t $TAGS -v $version -S ${VERSION_LATEST:+-L} -P ${SEMVER_PRECISION:-1} "$image_tag"
   on:
     branch: master
 
