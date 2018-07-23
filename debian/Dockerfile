@@ -32,6 +32,7 @@ RUN set -xe; \
     export GNUPGHOME="$(mktemp -d)"; \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_GPG_KEY"; \
     gpg --batch --verify gosu.asc gosu; \
+    { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
     rm -rf "$GNUPGHOME" gosu.asc; \
     chmod +x gosu; \
     mv gosu /usr/local/sbin/gosu; \
@@ -45,6 +46,7 @@ RUN set -xe; \
     export GNUPGHOME="$(mktemp -d)"; \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$TINI_GPG_KEY"; \
     gpg --batch --verify tini.asc tini; \
+    { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
     rm -rf "$GNUPGHOME" tini.asc; \
     chmod +x tini; \
     mv tini /usr/local/sbin/tini; \

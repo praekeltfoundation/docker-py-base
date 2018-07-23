@@ -12,6 +12,7 @@ env:
   global:
     - IMAGE_USER=praekeltfoundation
     - REGISTRY_USER=praekeltorgdeploy
+    - PGP_HAPPY_EYEBALLS_REF=a590d20d23389b3a880a743ae6ada64506907769
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
   matrix:
     - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    TAGS="alpine3.8 alpine" VERSION_LATEST=1
@@ -26,6 +27,10 @@ env:
     - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  TAGS="stretch latest"   VERSION_LATEST=
 
 before_script:
+  # tianon's hack to get PGP to work vaguely reliably
+  - if [[ "$BASE_OS" = 'debian' ]]; then
+      wget -qO- "https://github.com/tianon/pgp-happy-eyeballs/raw/$PGP_HAPPY_EYEBALLS_REF/hack-my-builds.sh" | bash;
+    fi
   # Find the Python: 'python' or 'pypy'
   - python="${FROM_IMAGE%:*}"
   # Find the full version: '2-5.8.0', '2.7.13'...
@@ -38,7 +43,7 @@ before_script:
   # Pull existing image to use as cache
   - docker pull "$image_tag" || true
 script:
-  - travis_retry docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
+  - docker build --pull --cache-from "$image_tag" --tag "$image_tag" --build-arg FROM_IMAGE="$FROM_IMAGE" "$BASE_OS"
 after_script:
   - docker images
 
