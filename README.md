@@ -3,6 +3,8 @@
 
 Dockerfiles for base images that make creating correct, minimal images for Python applications easier.
 
+> **NOTE:** The `latest`/shorter form tags now track the latest Python and Debian releases. The shorter/latest tags for these images originally pointed to Debian Jessie and Python 2.7 images. For example, the `latest` tag used to be the Debian Jessie/Python 2.7 image. This has been updated to match the behaviour of the upstream image tags. You should generally use the most specific tag that you need, for example `2.7-stretch`.
+
 ## Images
 #### `praekeltfoundation/python-base`
 [![Docker Pulls](https://img.shields.io/docker/pulls/praekeltfoundation/python-base.svg?style=flat-square)](https://hub.docker.com/r/praekeltfoundation/python-base/)
