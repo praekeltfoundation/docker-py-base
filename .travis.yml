@@ -17,19 +17,19 @@ env:
   matrix:
     # BASE_OS:          which directory/Dockerfile to build from
     # FROM_IMAGE:       which image to build from
-    # TAG_LATEST:       set to any value to also tag without OS/distribution
-    # VERSION_LATEST:   set to any value to also tag without version
-    # SEMVER_PRECISION: minimum number of parts of the version to tag with (x.y.z is 3 parts, default 1)
-    - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    TAG_LATEST=  VERSION_LATEST=1
-    - BASE_OS=alpine FROM_IMAGE=python:3.6.6-alpine3.8     TAG_LATEST=  VERSION_LATEST=  SEMVER_PRECISION=2
-    - BASE_OS=alpine FROM_IMAGE=python:3.7.0-alpine3.8     TAG_LATEST=  VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim-jessie   TAG_LATEST=1 VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim-jessie   TAG_LATEST=1 VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  TAG_LATEST=1 VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch TAG_LATEST=  VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   TAG_LATEST=1 VERSION_LATEST=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  TAG_LATEST=  VERSION_LATEST=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  TAG_LATEST=1 VERSION_LATEST=
+    # LATEST_DIST:      set to any value to also tag without the OS/distribution
+    # LATEST_VERSION:   set to any value to also tag without the version
+    # SEMVER_PRECISION: minimum number of parts of the version to tag with (e.g. x.y.z is 3 parts, default 1)
+    - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    LATEST_DIST=  LATEST_VERSION=1
+    - BASE_OS=alpine FROM_IMAGE=python:3.6.6-alpine3.8     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=alpine FROM_IMAGE=python:3.7.0-alpine3.8     LATEST_DIST=  LATEST_VERSION=
+    - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim-jessie   LATEST_DIST=1 LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim-jessie   LATEST_DIST=1 LATEST_VERSION=
+    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  LATEST_DIST=1 LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch LATEST_DIST=  LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  LATEST_DIST=1 LATEST_VERSION=
 
 before_script:
   # tianon's hack to get PGP to work vaguely reliably
@@ -60,7 +60,7 @@ before_deploy:
   - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
 deploy:
   provider: script
-  script: dcd -t $tag ${TAG_LATEST:+latest} -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${VERSION_LATEST:+-L} "$image_tag"
+  script: dcd -t $tag ${LATEST_DIST:+latest} -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${LATEST_VERSION:+-L} "$image_tag"
   on:
     branch: master
 
