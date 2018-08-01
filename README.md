@@ -3,10 +3,6 @@
 
 Dockerfiles for base images that make creating correct, minimal images for Python applications easier.
 
-> **NOTE:** The tags for these images have changed recently. The `praekeltfoundation/python3-base` tag is now defunct. Use the `praekeltfoundation/python-base:3` tag rather. Also, the `:debian` tags are no longer being updated and will be removed. Debian is the default OS for all images that don't include "alpine" in the tag.
-
-> **NOTE:** The `praekeltfoundation/debian-base` and `praekeltfoundation/alpine-base` images have been removed. Now, only images for Python applications are built from this repo.
-
 ## Images
 #### `praekeltfoundation/python-base`
 [![Docker Pulls](https://img.shields.io/docker/pulls/praekeltfoundation/python-base.svg?style=flat-square)](https://hub.docker.com/r/praekeltfoundation/python-base/)
