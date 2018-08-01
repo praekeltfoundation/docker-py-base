@@ -20,6 +20,7 @@ env:
     # LATEST_DIST:      set to any value to also tag without the OS/distribution
     # LATEST_VERSION:   set to any value to also tag without the version
     # SEMVER_PRECISION: minimum number of parts of the version to tag with (e.g. x.y.z is 3 parts, default 1)
+    # Note that all Alpine-based images will get the extra tag 'alpine'
     - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    LATEST_DIST=  LATEST_VERSION=
     - BASE_OS=alpine FROM_IMAGE=python:3.6.6-alpine3.8     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
     - BASE_OS=alpine FROM_IMAGE=python:3.7.0-alpine3.8     LATEST_DIST=  LATEST_VERSION=1
@@ -45,6 +46,7 @@ before_script:
   # Find the OS distribution: jessie, stretch, alpine3.8
   - dist="${FROM_IMAGE##*-}"
   - tag="${maj_version}-${dist}"
+  - if [[ "$BASE_OS" = 'alpine' ]]; then os_tag='alpine'; else os_tag=''; fi
   - image_tag="$IMAGE_USER/${python}-base:$tag"
   - echo "Building image '$image_tag' based on '$FROM_IMAGE' with version '$version'..."
   # Pull existing image to use as cache
@@ -60,7 +62,7 @@ before_deploy:
   - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
 deploy:
   provider: script
-  script: dcd -t $tag ${LATEST_DIST:+latest} -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${LATEST_VERSION:+-L} "$image_tag"
+  script: dcd -t $tag $os_tag ${LATEST_DIST:+latest} -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${LATEST_VERSION:+-L} "$image_tag"
   on:
     branch: master
 
