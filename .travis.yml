@@ -60,9 +60,10 @@ after_script:
 before_deploy:
   - pip install docker-ci-deploy==0.3.0
   - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
+  - tags="$tag $os_tag ${LATEST_DIST:+latest}"
 deploy:
   provider: script
-  script: dcd -t $tag $os_tag ${LATEST_DIST:+latest} -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${LATEST_VERSION:+-L} "$image_tag"
+  script: dcd -t $tags -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${LATEST_VERSION:+-L} "$image_tag"
   on:
     branch: master
 
