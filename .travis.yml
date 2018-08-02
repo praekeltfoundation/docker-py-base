@@ -15,16 +15,22 @@ env:
     - PGP_HAPPY_EYEBALLS_REF=a590d20d23389b3a880a743ae6ada64506907769
     - secure: "gJZqz0DVsgnxZwkZmUsIAuMMZzIItrj6xaIhHgnYHCtS2Qls2S0FrwhgUtHCNnBhFet2vEurTA4sB76mD8Xr0daEFdqhjB/vpPLAThM+T969mSprfECkz2RJFX3N79TaM8wuOHKT8Xqvf14BhyOlIUou3T27E5/X1q2EUAJk3eb6jruNHogedyXzYuwWM6uWoMFov7UzDdB6FWa4y2266/I/exXjDgcYq/a073xtRANnWVVLks5Jz+TFCPl5zyEFFQNzk7Q2a9S8CNpLXwnA8MfsRksnq+B5/9EwndEsajGl29Pe6GgVGIX/KqmEky3VI0FEorM9DhgBn/Bc+5E6Quv+1k4ZfpCfNX9w/uU70NfN2EHqXjwjpd8LOfZ3w/J7f+tr5MwZksE4wQRqZiA6mv953Mt20B5GVgPRkXzyd9QiiaA9Ry2zSxLxJBSPlAzM6cEeKUlJ9ykhATS1H/YAGlnfT3HXgVJRYAqQ+xL7XMB4ZUE3qEdFWBFZKF9xX3vflr6klubAPB/VcWHCF8HLBiQfeEKuZEw+uLK+I4wLVwWk3tzqcoGInjixi5DcN8Uq4A8XrOBMPjDfu7j6PpaoHQOf4/pX8DmX79DVsrY1+fZLiXa94lscSjT55V7Ec809PDyXIn8O/0QRFSJw8e5iwQ8BuMg1S4Lkvj8NewzgTOI="
   matrix:
-    - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    TAGS="alpine3.8 alpine" VERSION_LATEST=1
-    - BASE_OS=alpine FROM_IMAGE=python:3.6.6-alpine3.8     TAGS="alpine3.8 alpine" VERSION_LATEST=  SEMVER_PRECISION=2
-    - BASE_OS=alpine FROM_IMAGE=python:3.7.0-alpine3.8     TAGS="alpine3.8 alpine" VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim          TAGS="jessie latest"    VERSION_LATEST=
-    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  TAGS="jessie latest"    VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch TAGS="stretch"          VERSION_LATEST=1
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   TAGS="jessie latest"    VERSION_LATEST=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  TAGS="stretch"          VERSION_LATEST=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  TAGS="stretch latest"   VERSION_LATEST=
+    # BASE_OS:          which directory/Dockerfile to build from
+    # FROM_IMAGE:       which image to build from
+    # LATEST_DIST:      set to any value to also tag without the OS/distribution
+    # LATEST_VERSION:   set to any value to also tag without the version
+    # SEMVER_PRECISION: minimum number of parts of the version to tag with (e.g. x.y.z is 3 parts, default 1)
+    # Note that all Alpine-based images will get the extra tag 'alpine'
+    - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    LATEST_DIST=  LATEST_VERSION=
+    - BASE_OS=alpine FROM_IMAGE=python:3.6.6-alpine3.8     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=alpine FROM_IMAGE=python:3.7.0-alpine3.8     LATEST_DIST=  LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim-jessie   LATEST_DIST=1 LATEST_VERSION=
+    - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim-jessie   LATEST_DIST=1 LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  LATEST_DIST=  LATEST_VERSION=
+    - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch LATEST_DIST=1 LATEST_VERSION=
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
 
 before_script:
   # tianon's hack to get PGP to work vaguely reliably
@@ -37,7 +43,10 @@ before_script:
   - version="$(echo "$FROM_IMAGE" | grep -oP '(\d+-)?\d+(\.\d+)*' | head -1)"
   # Find the major Python version: '2-5.8.0' => '2', '2.7.13' => '2.7'
   - maj_version="$(echo "${version%-*}" | grep -oP '^\d+(\.\d+)?')"
-  - tags=($TAGS); tag="$maj_version-${tags[0]}"
+  # Find the OS distribution: jessie, stretch, alpine3.8
+  - dist="${FROM_IMAGE##*-}"
+  - tag="${maj_version}-${dist}"
+  - if [[ "$BASE_OS" = 'alpine' ]]; then os_tag='alpine'; else os_tag=''; fi
   - image_tag="$IMAGE_USER/${python}-base:$tag"
   - echo "Building image '$image_tag' based on '$FROM_IMAGE' with version '$version'..."
   # Pull existing image to use as cache
@@ -51,9 +60,10 @@ after_script:
 before_deploy:
   - pip install docker-ci-deploy==0.3.0
   - echo "$REGISTRY_PASS" | docker login --username "$REGISTRY_USER" --password-stdin
+  - tags="$tag $os_tag ${LATEST_DIST:+latest}"
 deploy:
   provider: script
-  script: dcd -t $TAGS -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${VERSION_LATEST:+-L} "$image_tag"
+  script: dcd -t $tags -V $version --version-semver -P ${SEMVER_PRECISION:-1} ${LATEST_VERSION:+-L} "$image_tag"
   on:
     branch: master
 
