@@ -1,4 +1,4 @@
-ARG FROM_IMAGE=python:3-slim-stretch
+ARG FROM_IMAGE=python:slim
 FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 

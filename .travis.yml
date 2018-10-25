@@ -22,15 +22,15 @@ env:
     # SEMVER_PRECISION: minimum number of parts of the version to tag with (e.g. x.y.z is 3 parts, default 1)
     # Note that all Alpine-based images will get the extra tag 'alpine'
     - BASE_OS=alpine FROM_IMAGE=python:2.7.15-alpine3.8    LATEST_DIST=  LATEST_VERSION=
-    - BASE_OS=alpine FROM_IMAGE=python:3.6.6-alpine3.8     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
-    - BASE_OS=alpine FROM_IMAGE=python:3.7.0-alpine3.8     LATEST_DIST=  LATEST_VERSION=1
+    - BASE_OS=alpine FROM_IMAGE=python:3.6.7-alpine3.8     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=alpine FROM_IMAGE=python:3.7.1-alpine3.8     LATEST_DIST=  LATEST_VERSION=1
     - BASE_OS=debian FROM_IMAGE=pypy:2-6.0.0-slim-jessie   LATEST_DIST=1 LATEST_VERSION=
     - BASE_OS=debian FROM_IMAGE=pypy:3-6.0.0-slim-jessie   LATEST_DIST=1 LATEST_VERSION=1
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-jessie  LATEST_DIST=  LATEST_VERSION=
     - BASE_OS=debian FROM_IMAGE=python:2.7.15-slim-stretch LATEST_DIST=1 LATEST_VERSION=
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-jessie   LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.6.6-slim-stretch  LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.7.0-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=python:3.6.7-slim-jessie   LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.6.7-slim-stretch  LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
+    - BASE_OS=debian FROM_IMAGE=python:3.7.1-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
 
 before_script:
   # tianon's hack to get PGP to work vaguely reliably
