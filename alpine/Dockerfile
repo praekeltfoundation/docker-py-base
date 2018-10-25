@@ -1,4 +1,4 @@
-ARG FROM_IMAGE=python:3-alpine3.7
+ARG FROM_IMAGE=python:alpine
 FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
