@@ -30,7 +30,7 @@ RUN set -xe; \
     wget -O gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64"; \
     wget -O gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64.asc"; \
     export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_GPG_KEY"; \
+    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_GPG_KEY"; \
     gpg --batch --verify gosu.asc gosu; \
     { command -v gpgconf > /dev/null && gpgconf --kill all || :; }; \
     rm -rf "$GNUPGHOME" gosu.asc; \
@@ -44,7 +44,7 @@ RUN set -xe; \
     wget -O tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-amd64"; \
     wget -O tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-amd64.asc"; \
     export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$TINI_GPG_KEY"; \
+    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$TINI_GPG_KEY"; \
     gpg --batch --verify tini.asc tini; \
     { command -v gpgconf > /dev/null && gpgconf --kill all || :; }; \
     rm -rf "$GNUPGHOME" tini.asc; \
