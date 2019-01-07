@@ -1,5 +1,4 @@
-sudo: required
-group: trusty_latest
+dist: xenial
 services: docker
 language: python
 
