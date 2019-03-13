@@ -58,16 +58,6 @@ RUN set -xe; \
     \
     apt-get-purge.sh $fetchDeps
 
-# HACK: Make sure a Python is available as `python`. Only necessary for PyPy.
-RUN set -ex; \
-    if ! command -v python > /dev/null; then \
-        cd /usr/local/bin; \
-        for py in pypy3 pypy python3 python2; do \
-            [ -x "$py" ] && ln -s "$py" python || true; \
-        done; \
-        readlink -e python; \
-    fi
-
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
 CMD ["python"]
