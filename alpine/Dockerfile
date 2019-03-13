@@ -29,5 +29,4 @@ ENV PATH $PATH:/scripts
 
 # Set tini as the default entrypoint
 ENTRYPOINT ["tini", "--"]
-# No PyPy on Alpine, and the base image symlinks `python3` as `python`
 CMD ["python"]
