@@ -23,9 +23,7 @@ env:
     - BASE_OS=alpine FROM_IMAGE=python:2.7.16-alpine3.9    LATEST_DIST=  LATEST_VERSION=
     - BASE_OS=alpine FROM_IMAGE=python:3.6.8-alpine3.9     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
     - BASE_OS=alpine FROM_IMAGE=python:3.7.2-alpine3.9     LATEST_DIST=  LATEST_VERSION=1
-    - BASE_OS=debian FROM_IMAGE=python:2.7.16-slim-jessie  LATEST_DIST=  LATEST_VERSION=
     - BASE_OS=debian FROM_IMAGE=python:2.7.16-slim-stretch LATEST_DIST=1 LATEST_VERSION=
-    - BASE_OS=debian FROM_IMAGE=python:3.6.8-slim-jessie   LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
     - BASE_OS=debian FROM_IMAGE=python:3.6.8-slim-stretch  LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
     - BASE_OS=debian FROM_IMAGE=python:3.7.2-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
 
@@ -40,7 +38,7 @@ before_script:
   - version="$(echo "$FROM_IMAGE" | grep -oP '(\d+-)?\d+(\.\d+)*' | head -1)"
   # Find the major Python version: '2-5.8.0' => '2', '2.7.13' => '2.7'
   - maj_version="$(echo "${version%-*}" | grep -oP '^\d+(\.\d+)?')"
-  # Find the OS distribution: jessie, stretch, alpine3.8
+  # Find the OS distribution: e.g. jessie, stretch, alpine3.8
   - dist="${FROM_IMAGE##*-}"
   - tag="${maj_version}-${dist}"
   - if [[ "$BASE_OS" = 'alpine' ]]; then os_tag='alpine'; else os_tag=''; fi
