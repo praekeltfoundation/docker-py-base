@@ -31,7 +31,7 @@ Two simple scripts that wrap `apt-get install` and `apt-get purge` to make it ea
 For a complete explanation of this problem see [this](https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) excellent blog post by Phusion. Suffice to say, many programs expect the system they're running on to have an init system that will manage/clean up child processes but most Docker containers don't have an init system.
 
 ##### Our solution:
-Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use [`tini`](https://github.com/krallin/tini).
+Using a very very simple init system that reaps orphaned child processes and passes through signals to the main process. We use [`dumb-init`](https://github.com/Yelp/dumb-init) or [`tini`](https://github.com/krallin/tini), depending on which packages are available for the specific operating system. The interfaces for these two programs are very similar and we symlink both to be available as `tini`, `dumb-init`, and `dinit`.
 
 > **Note:** `tini` is built-in to Docker 1.13.0+. It can be enabled by passing `--init` to `dockerd` or `docker run`. Once all our infrastructure moves to a new-enough version of Docker, we may enable that and remove `tini` from these images.
 
@@ -52,7 +52,7 @@ By default, everything in Docker containers is run as the root user. While conta
 Unfortunately, existing tools like `su` and `sudo` weren't designed for use inside containers and introduce their own problems, similar to those described above with parent shell processes. For more information, read the [`gosu`](https://github.com/tianon/gosu#why) docs.
 
 #### Our solution:
-* `su-exec`: We install [`su-exec`](https://github.com/ncopa/su-exec) on the Alpine Linux images which has an identical interface to the better-known [`gosu`](https://github.com/tianon/gosu) but is a much smaller binary and available in the Alpine package archives. On Debian we install `gosu` and symlink it to be available as `su-exec`.
+* `su-exec`/`gosu`: We install either [`gosu`](https://github.com/tianon/gosu) or [`su-exec`](https://github.com/ncopa/su-exec), and symlink the one as the other so you should always be able to run both `su-exec` and `gosu` commands. Which one is installed depends on which packages are available on the specific operating system. They have the same interfaces so it should be possible to use them interchangeably.
 * Generally you should create a user to run your process under and then `su-exec` to that user in the entrypoint script for the process. For example:
 
 `Dockerfile`:
