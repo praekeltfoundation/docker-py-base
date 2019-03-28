@@ -9,16 +9,13 @@ Dockerfiles for base images that make creating correct, minimal images for Pytho
 #### `praekeltfoundation/python-base`
 [![Docker Pulls](https://flat.badgen.net/docker/pulls/praekeltfoundation/python-base)](https://hub.docker.com/r/praekeltfoundation/python-base/)
 
-Provides Debian- and Alpine Linux-based Python images with some utility scripts, `tini`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
-
-#### Tags
-Debian is the default operating system and `:latest` tags will point to the Debian variants of images. Alpine variants are tagged with `:alpine`.
+Provides Debian--based Python images with some utility scripts, `tini`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
 ### Building the images
-Images are built in the context of their OS directories. So you can run something like this to build, for example, the Alpine Python 2.7 image:
+Use the `FROM_IMAGE` build argument to adjust the image to build from. For example:
 
 ```
-> $ docker build -t python-base:2.7-alpine -f alpine/python/2.7/Dockerfile alpine
+> $ docker build -t python-base:3.6 --build-arg FROM_IMAGE=python:3.6-slim .
 ```
 
 ## Common Docker problems
@@ -78,12 +75,6 @@ exec su-exec vumi \
     --param1 arg1 \
     --param2 arg2
 ```
-
-### Python package dependencies
-Installing the correct runtime native dependencies for Python packages is not always straightforward. For instance, a package like [`Pillow`](https://pypi.python.org/pypi/Pillow) has dependencies on a number of C libraries for working with images, such as [`libjpeg`](http://libjpeg.sourceforge.net) or [`libwebp`](https://chromium.googlesource.com/webm/libwebp). It's not always clear which libraries are required.
-
-#### Our solution:
-We build binary distributions of Python packages that we commonly use and host them in a PyPi repository. For more information, see [this repo](https://github.com/praekeltfoundation/debian-wheel-mirror). On our Alpine Linux images, we've added a script ([`install-py-pkg-deps.sh`](alpine/scripts/install-py-pkg-deps.sh)) that scans Python's site-packages directories for linked libraries and then installs the packages that provide those libraries.
 
 ## Older scripts
 Some of our common practices for Docker containers have evolved over time and a few of the patterns we've used in the past we're not using much anymore. For posterity, the [`scripts-archive`](scripts-archive) directory contains some scripts that we don't use anymore and aren't built into our images but some people may still find useful.

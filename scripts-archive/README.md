@@ -18,3 +18,9 @@ When using the `CMD` directive properly in its JSON array format (`CMD ["arg1", 
 
 #### Our solution:
 A Bash script ([`eval-args.sh`](common/eval-args.sh)) that can be used to get shell-like behaviour. It evaluates each part of a command to resolve all the variables' values and then `exec`s the resulting command.
+
+### Python package dependencies
+Installing the correct runtime native dependencies for Python packages is not always straightforward. For instance, a package like [`Pillow`](https://pypi.python.org/pypi/Pillow) has dependencies on a number of C libraries for working with images, such as [`libjpeg`](http://libjpeg.sourceforge.net) or [`libwebp`](https://chromium.googlesource.com/webm/libwebp). It's not always clear which libraries are required.
+
+#### Our solution:
+We build binary distributions of Python packages that we commonly use and host them in a PyPi repository. For more information, see [this repo](https://github.com/praekeltfoundation/debian-wheel-mirror). On our Alpine Linux images, we've added a script ([`install-py-pkg-deps.sh`](alpine/scripts/install-py-pkg-deps.sh)) that scans Python's site-packages directories for linked libraries and then installs the packages that provide those libraries.
