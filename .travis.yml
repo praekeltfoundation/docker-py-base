@@ -22,10 +22,10 @@ env:
     # Note that all Alpine-based images will get the extra tag 'alpine'
     - BASE_OS=alpine FROM_IMAGE=python:2.7.16-alpine3.9    LATEST_DIST=  LATEST_VERSION=
     - BASE_OS=alpine FROM_IMAGE=python:3.6.8-alpine3.9     LATEST_DIST=  LATEST_VERSION=  SEMVER_PRECISION=2
-    - BASE_OS=alpine FROM_IMAGE=python:3.7.2-alpine3.9     LATEST_DIST=  LATEST_VERSION=1
+    - BASE_OS=alpine FROM_IMAGE=python:3.7.3-alpine3.9     LATEST_DIST=  LATEST_VERSION=1
     - BASE_OS=debian FROM_IMAGE=python:2.7.16-slim-stretch LATEST_DIST=1 LATEST_VERSION=
     - BASE_OS=debian FROM_IMAGE=python:3.6.8-slim-stretch  LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
-    - BASE_OS=debian FROM_IMAGE=python:3.7.2-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
+    - BASE_OS=debian FROM_IMAGE=python:3.7.3-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
 
 before_script:
   # tianon's hack to get PGP to work vaguely reliably
