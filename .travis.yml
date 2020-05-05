@@ -21,6 +21,8 @@ env:
     - FROM_IMAGE=python:2.7.16-slim-stretch LATEST_DIST=1 LATEST_VERSION=
     - FROM_IMAGE=python:3.6.8-slim-stretch  LATEST_DIST=1 LATEST_VERSION=  SEMVER_PRECISION=2
     - FROM_IMAGE=python:3.7.3-slim-stretch  LATEST_DIST=1 LATEST_VERSION=1
+    - FROM_IMAGE=pypy:2.7-7.3.0-slim-buster LATEST_DIST=1 LATEST_VERSION=
+    - FROM_IMAGE=pypy:3.6-7.3.0-slim-buster LATEST_DIST=1 LATEST_VERSION=1
 
 before_script:
   # Find the Python: 'python' or 'pypy'
