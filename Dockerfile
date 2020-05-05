@@ -10,6 +10,16 @@ RUN set -ex; \
     echo 'no-cache-dir = false' >> /etc/pip.conf; \
     echo "extra-index-url = https://$codename.wheelhouse.praekelt.org/simple" >> /etc/pip.conf
 
+# HACK: Make sure a Python is available as `python`. Only necessary for PyPy.
+RUN set -ex; \
+    if ! command -v python > /dev/null; then \
+        cd /usr/local/bin; \
+        for py in pypy3 pypy python3 python2; do \
+            [ -x "$py" ] && ln -s "$py" python || true; \
+        done; \
+        readlink -e python; \
+    fi
+
 # Install utility scripts
 COPY scripts /scripts
 ENV PATH $PATH:/scripts

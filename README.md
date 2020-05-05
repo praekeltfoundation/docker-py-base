@@ -11,6 +11,11 @@ Dockerfiles for base images that make creating correct, minimal images for Pytho
 
 Provides Debian--based Python images with some utility scripts, `tini`, and `gosu`. Also configures `pip` to not use a cache and to use the Praekelt.org Python Package Index. For more information about our Package Index, see [`praekeltfoundation/debian-wheel-mirror`](https://github.com/praekeltfoundation/debian-wheel-mirror).
 
+#### `praekeltfoundation/pypy-base`
+[![Docker Pulls](https://flat.badgen.net/docker/pulls/praekeltfoundation/pypy-base)](https://hub.docker.com/r/praekeltfoundation/pypy-base/)
+
+Same as the `python-base` image but with [PyPy](http://pypy.org) instead of the standard CPython Python implementation.
+
 ### Building the images
 Use the `FROM_IMAGE` build argument to adjust the image to build from. For example:
 
