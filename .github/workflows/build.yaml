@@ -1,0 +1,72 @@
+name: Build docker image
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - version: "2.7.16"
+            dist: stretch
+            python: python
+          - version: "3.6.12"
+            dist: stretch
+            python: python
+          - version: "3.7.9"
+            dist: stretch
+            python: python
+          - version: "3.8.7"
+            dist: buster
+            python: python
+          - version: "3.9.1"
+            dist: buster
+            python: python
+          - version: "2.7-7.3.0"
+            dist: buster
+            python: pypy
+          - version: "3.6-7.3.0"
+            dist: buster
+            python: pypy
+          
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-buildx-action@v1
+      - name: construct image metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            praekeltfoundation/${{matrix.python}}-base
+            ghcr.io/${{matrix.python}}-base
+          tags: |
+            type=semver,pattern={{verson}},value=${{matrix.version}}
+            type=semver,pattern={{major}}.{{minor}},value=${{matrix.version}}
+            type=semver,pattern={{major}},value=${{matrix.version}}
+            type=raw,value=${{matrix.dist}}
+            type=semver,pattern={{verson}}-${{matrix.dist}},value=${{matrix.version}}
+            type=semver,pattern={{major}}.{{minor}}-${{matrix.dist}},value=${{matrix.version}}
+            type=semver,pattern={{major}}-${{matrix.dist}},value=${{matrix.version}}
+      - name: login to ghcr
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          passport: ${{secrets.GITHUB_TOKEN}}
+      - name: login to docker hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          passport: ${{secrets.DOCKER_PASSWORD}}
+      - name: build and push
+        if: ${{github.event_name != "pull_request"}}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{steps.meta.outputs.tags}}
