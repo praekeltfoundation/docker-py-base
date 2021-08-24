@@ -35,6 +35,10 @@ jobs:
             version_suffix: "-7.3.3"
             dist: buster
             python: pypy
+          - version: "3.7"
+            version_suffix: "-7.3.5"
+            dist: bullseye
+            python: pypy
           
     steps:
       - uses: actions/checkout@v2
