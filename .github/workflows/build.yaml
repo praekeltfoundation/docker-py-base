@@ -45,11 +45,11 @@ jobs:
             praekeltfoundation/${{matrix.python}}-base
             ghcr.io/${{matrix.python}}-base
           tags: |
-            type=semver,pattern={{verson}},value=${{matrix.version}}
+            type=semver,pattern={{version}},value=${{matrix.version}}
             type=semver,pattern={{major}}.{{minor}},value=${{matrix.version}}
             type=semver,pattern={{major}},value=${{matrix.version}}
             type=raw,value=${{matrix.dist}}
-            type=semver,pattern={{verson}}-${{matrix.dist}},value=${{matrix.version}}
+            type=semver,pattern={{version}}-${{matrix.dist}},value=${{matrix.version}}
             type=semver,pattern={{major}}.{{minor}}-${{matrix.dist}},value=${{matrix.version}}
             type=semver,pattern={{major}}-${{matrix.dist}},value=${{matrix.version}}
       - name: login to ghcr
