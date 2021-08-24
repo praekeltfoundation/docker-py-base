@@ -1,5 +1,5 @@
 # docker-py-base
-[![Build Status](https://flat.badgen.net/travis/praekeltfoundation/docker-py-base/master)](https://travis-ci.org/praekeltfoundation/docker-py-base)
+[![Build Status](https://github.com/praekeltfoundation/docker-py-base/actions/workflows/build.yaml/badge.svg)](https://github.com/praekeltfoundation/docker-py-base/actions)
 
 Dockerfiles for base images that make creating correct, minimal images for Python applications easier.
 
