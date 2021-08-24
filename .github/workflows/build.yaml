@@ -45,7 +45,7 @@ jobs:
         with:
           images: |
             praekeltfoundation/${{matrix.python}}-base
-            ghcr.io/${{matrix.python}}-base
+            ghcr.io/praekeltfoundation/${{matrix.python}}-base
           tags: |
             type=pep440,pattern={{version}},value=${{matrix.version}}
             type=pep440,pattern={{major}}.{{minor}},value=${{matrix.version}}
