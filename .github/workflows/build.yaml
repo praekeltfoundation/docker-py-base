@@ -70,3 +70,5 @@ jobs:
           context: .
           push: true
           tags: ${{steps.meta.outputs.tags}}
+          build-args: |
+            FROM_IMAGE=${{matrix.python}}:${{matrix.version}}-slim-${{matrix.dist}}
