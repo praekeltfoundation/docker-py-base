@@ -64,7 +64,7 @@ jobs:
           username: ${{secrets.DOCKER_USERNAME}}
           passport: ${{secrets.DOCKER_PASSWORD}}
       - name: build and push
-        if: ${{github.event_name != "pull_request"}}
+        if: ${{github.event_name != 'pull_request'}}
         uses: docker/build-push-action@v2
         with:
           context: .
