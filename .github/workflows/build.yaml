@@ -62,7 +62,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: ${{secrets.DOCKER_USERNAME}}
-          passport: ${{secrets.DOCKER_PASSWORD}}
+          password: ${{secrets.DOCKER_PASSWORD}}
       - name: build and push
         if: ${{github.event_name != 'pull_request'}}
         uses: docker/build-push-action@v2
