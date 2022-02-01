@@ -1,0 +1,42 @@
+ARG FROM_IMAGE=python:slim
+FROM $FROM_IMAGE
+LABEL maintainer "Praekelt.org <sre@praekelt.org>"
+
+# pip: Disable cache and use Praekelt.org Python Package Index
+RUN set -ex; \
+    codename="$(. /etc/os-release; echo $VERSION | grep -oE [a-z]+)"; \
+    echo '[global]' > /etc/pip.conf; \
+# `no-cache-dir = false` is not intuitive--it's translated to a CLI option and does disable the cache
+    echo 'no-cache-dir = false' >> /etc/pip.conf
+
+# HACK: Make sure a Python is available as `python`. Only necessary for PyPy.
+RUN set -ex; \
+    if ! command -v python > /dev/null; then \
+        cd /usr/local/bin; \
+        for py in pypy3 pypy python3 python2; do \
+            [ -x "$py" ] && ln -s "$py" python || true; \
+        done; \
+        readlink -e python; \
+    fi
+
+# Install utility scripts
+COPY scripts /scripts
+ENV PATH $PATH:/scripts
+
+# Install gosu/dumb-init after copying in the scripts so we can use them
+# Note that gosu/dumb-init are only available from Debian Stretch, tini should
+# be available on Buster.
+RUN set -xe; \
+    apt-get-install.sh dumb-init gosu; \
+# Link `gosu` as `su-exec` for compatibility with Alpine Linux
+    ln -s "$(which gosu)" /usr/local/sbin/su-exec; \
+    gosu nobody true; \
+# Link `dumb-init` as `dinit` and `tini` for compatibility with older images
+    ln -s "$(which dumb-init)" /usr/local/sbin/dinit; \
+    dinit -- true; \
+    ln -s "$(which dumb-init)" /usr/local/sbin/tini; \
+    tini -- true
+
+# Set tini as the default entrypoint
+ENTRYPOINT ["tini", "--"]
+CMD ["python"]
