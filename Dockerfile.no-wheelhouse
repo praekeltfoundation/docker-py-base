@@ -2,7 +2,7 @@ ARG FROM_IMAGE=python:slim
 FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
-# pip: Disable cache and use Praekelt.org Python Package Index
+# pip: Disable cache
 RUN set -ex; \
     codename="$(. /etc/os-release; echo $VERSION | grep -oE [a-z]+)"; \
     echo '[global]' > /etc/pip.conf; \
