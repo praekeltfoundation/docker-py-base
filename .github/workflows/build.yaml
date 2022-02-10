@@ -123,3 +123,14 @@ jobs:
           tags: ${{steps.meta.outputs.tags}}
           build-args: |
             FROM_IMAGE=${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+
+  snyk-oss-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Check for High Severity OSS Vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --fail-on=upgradable
