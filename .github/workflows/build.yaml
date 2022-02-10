@@ -123,3 +123,15 @@ jobs:
           tags: ${{steps.meta.outputs.tags}}
           build-args: |
             FROM_IMAGE=${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+      - name: Snyk Container Test
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ Secrets.SNYK_TOKEN }}
+        with:
+          image: ${{steps.meta.outputs.tags[0]}}
+          args: --file=Dockerfile.no-wheelhouse
+      - name: Upload Container Scan results to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
