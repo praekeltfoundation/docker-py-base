@@ -130,7 +130,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ Secrets.SNYK_TOKEN }}
         with:
-          image: ${{steps.meta.outputs.tags[0]}}
+          image: ${{ steps.meta.outputs.tags }}
           args: --file=Dockerfile.no-wheelhouse
       - name: Upload Container Scan results to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
