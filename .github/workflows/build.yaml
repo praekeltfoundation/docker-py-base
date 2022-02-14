@@ -79,17 +79,19 @@ jobs:
     strategy:
       matrix:
         dist: [buster, bullseye]
-        version: ["3.10.2", "3.9.10", "3.8.12"]
+        version: ["3.10.2"]
+        # dist: [buster, bullseye]
+        # version: ["3.10.2", "3.9.10", "3.8.12"]
         python: [python]
-        include:
-          - version: "2.7"
-            version_suffix: "-7.3.5"
-            dist: buster
-            python: pypy
-          - version: "3.6"
-            version_suffix: "-7.3.3"
-            dist: buster
-            python: pypy
+        # include:
+        #   - version: "2.7"
+        #     version_suffix: "-7.3.5"
+        #     dist: buster
+        #     python: pypy
+        #   - version: "3.6"
+        #     version_suffix: "-7.3.3"
+        #     dist: buster
+        #     python: pypy
 
     steps:
       - uses: actions/checkout@v2
