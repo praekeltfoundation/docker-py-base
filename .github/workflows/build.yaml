@@ -131,7 +131,7 @@ jobs:
           SNYK_TOKEN: ${{ Secrets.SNYK_TOKEN }}
         with:
           image: ghcr.io/praekeltfoundation/${{matrix.python}}-base-nw:${{matrix.version}}-${{matrix.dist}}
-          args: --file=Dockerfile.no-wheelhouse
+          args: --file=Dockerfile.no-wheelhouse --fail-on=upgradable
       - name: Upload Container Scan results to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
         with:
