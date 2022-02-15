@@ -76,24 +76,49 @@ jobs:
 
   build-no-wheelhouse:
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     strategy:
       matrix:
         dist: [buster, bullseye]
-        version: ["3.10.2", "3.9.10", "3.8.12"]
+        version: ["3.10.2"]
+        # dist: [buster, bullseye]
+        # version: ["3.10.2", "3.9.10", "3.8.12"]
         python: [python]
-        include:
-          - version: "2.7"
-            version_suffix: "-7.3.5"
-            dist: buster
-            python: pypy
-          - version: "3.6"
-            version_suffix: "-7.3.3"
-            dist: buster
-            python: pypy
+        # include:
+        #   - version: "2.7"
+        #     version_suffix: "-7.3.5"
+        #     dist: buster
+        #     python: pypy
+        #   - version: "3.6"
+        #     version_suffix: "-7.3.3"
+        #     dist: buster
+        #     python: pypy
 
     steps:
       - uses: actions/checkout@v2
       - uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+      - name: base dockerfile
+        run: |
+          cat <<"EOF" > Dockerfile.no-wheelhouse-base
+          FROM ${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+          RUN set -ex; \
+              apt-get update; \
+              apt-get upgrade -y; \
+              rm -rf /var/lib/apt/lists/*
+          EOF
+      - name: build local base
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.no-wheelhouse-base
+          push: true
+          tags: localhost:5000/local/${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
       - name: construct image metadata
         id: meta
         uses: docker/metadata-action@v3
@@ -119,7 +144,20 @@ jobs:
         with:
           context: .
           file: Dockerfile.no-wheelhouse
+          load: true
           push: ${{github.event_name != 'pull_request'}}
           tags: ${{steps.meta.outputs.tags}}
           build-args: |
-            FROM_IMAGE=${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+            FROM_IMAGE=localhost:5000/local/${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+      - name: Snyk Container Test
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ Secrets.SNYK_TOKEN }}
+        with:
+          image: ghcr.io/praekeltfoundation/${{matrix.python}}-base-nw:${{matrix.version}}-${{matrix.dist}}
+          args: --file=Dockerfile.no-wheelhouse --fail-on=upgradable
+      - name: Upload Container Scan results to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
