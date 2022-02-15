@@ -102,7 +102,7 @@ jobs:
           FROM ${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
           RUN set -ex; \
               apt-get update; \
-              apt-get upgrade expat; \
+              apt-get upgrade -y expat; \
               rm -rf /var/lib/apt/lists/*
           EOF
       - name: build base
