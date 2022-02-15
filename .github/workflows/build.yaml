@@ -109,7 +109,7 @@ jobs:
           FROM ${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
           RUN set -ex; \
               apt-get update; \
-              apt-get upgrade -y expat; \
+              apt-get upgrade -y expat glibc libgcrypt20 perl; \
               rm -rf /var/lib/apt/lists/*
           EOF
       - name: build local base
