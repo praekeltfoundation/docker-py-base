@@ -27,7 +27,8 @@ ENV PATH $PATH:/scripts
 # Note that gosu/dumb-init are only available from Debian Stretch, tini should
 # be available on Buster.
 RUN set -xe; \
-    apt-get-install.sh dumb-init gosu; \
+# (Re)install expat to get a newer version
+    apt-get-install.sh dumb-init gosu expat; \
 # Link `gosu` as `su-exec` for compatibility with Alpine Linux
     ln -s "$(which gosu)" /usr/local/sbin/su-exec; \
     gosu nobody true; \
