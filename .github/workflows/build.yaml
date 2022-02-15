@@ -76,6 +76,11 @@ jobs:
 
   build-no-wheelhouse:
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     strategy:
       matrix:
         dist: [buster, bullseye]
@@ -105,13 +110,13 @@ jobs:
               apt-get upgrade -y expat; \
               rm -rf /var/lib/apt/lists/*
           EOF
-      - name: build base
+      - name: build local base
         uses: docker/build-push-action@v2
         with:
           context: .
           file: Dockerfile.no-wheelhouse-base
-          load: true
-          tags: local-${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+          push: true
+          tags: localhost:5000/local/${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
       - name: construct image metadata
         id: meta
         uses: docker/metadata-action@v3
@@ -141,7 +146,7 @@ jobs:
           push: ${{github.event_name != 'pull_request'}}
           tags: ${{steps.meta.outputs.tags}}
           build-args: |
-            FROM_IMAGE=local-${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+            FROM_IMAGE=localhost:5000/local/${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
       - name: Snyk Container Test
         continue-on-error: true
         uses: snyk/actions/docker@master
