@@ -99,7 +99,7 @@ jobs:
       - name: base dockerfile
         run: |
           cat <<"EOF" > Dockerfile.no-wheelhouse-base
-          FROM ${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}-base
+          FROM ${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
           RUN set -ex; \
               apt-get update; \
               apt-get upgrade expat; \
@@ -111,7 +111,7 @@ jobs:
           context: .
           file: Dockerfile.no-wheelhouse-base
           load: true
-          tags: ${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}-base
+          tags: local-${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
       - name: construct image metadata
         id: meta
         uses: docker/metadata-action@v3
@@ -141,7 +141,7 @@ jobs:
           push: ${{github.event_name != 'pull_request'}}
           tags: ${{steps.meta.outputs.tags}}
           build-args: |
-            FROM_IMAGE=${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}-base
+            FROM_IMAGE=local-${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
       - name: Snyk Container Test
         continue-on-error: true
         uses: snyk/actions/docker@master
