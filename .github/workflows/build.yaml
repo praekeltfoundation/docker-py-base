@@ -148,9 +148,7 @@ jobs:
           push: ${{github.event_name != 'pull_request'}}
           tags: ${{steps.meta.outputs.tags}}
           build-args: |
-            FROM_IMAGE=${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
-          # build-args: |
-          #   FROM_IMAGE=localhost:5000/local/${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
+            FROM_IMAGE=localhost:5000/local/${{matrix.python}}:${{matrix.version}}${{matrix.version_suffix}}-slim-${{matrix.dist}}
       - name: Snyk Container Test
         continue-on-error: true
         uses: snyk/actions/docker@master
