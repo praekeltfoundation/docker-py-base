@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dist: ["buster", "bullseye"]
+        dist: [buster, bullseye]
         version: ["3.7.12", "3.8.12", "3.9.10", "3.10.2"]
+        python: [python]
         include:
           - version: "2.7"
             version_suffix: "-7.3.6"
