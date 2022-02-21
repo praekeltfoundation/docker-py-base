@@ -11,29 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        dist: ["buster", "bullseye"]
+        version: ["3.7.12", "3.8.12", "3.9.10", "3.10.2"]
         include:
-          - version: "2.7.18"
-            dist: stretch
-            python: python
-          - version: "3.6.14"
-            dist: stretch
-            python: python
-          - version: "3.7.11"
-            dist: stretch
-            python: python
-          - version: "3.8.11"
-            dist: buster
-            python: python
-          - version: "3.9.6"
-            dist: buster
-            python: python
           - version: "2.7"
-            version_suffix: "-7.3.5"
-            dist: buster
+            version_suffix: "-7.3.6"
+            dist: bullseye
             python: pypy
           - version: "3.6"
             version_suffix: "-7.3.3"
             dist: buster
+            python: pypy
+          - version: "3.7"
+            version_suffix: "-7.3.7"
+            dist: bullseye
+            python: pypy
+          - version: "3.8"
+            version_suffix: "-7.3.7"
+            dist: bullseye
             python: pypy
 
     steps:
