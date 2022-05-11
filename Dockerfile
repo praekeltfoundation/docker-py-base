@@ -1,4 +1,4 @@
-ARG FROM_IMAGE=python:slim
+ARG FROM_IMAGE=python:3.10-slim-bullseye
 FROM $FROM_IMAGE
 LABEL maintainer "Praekelt.org <sre@praekelt.org>"
 
