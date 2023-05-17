@@ -12,15 +12,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - version: "2.7.18"
-            dist: stretch
-            python: python
-          - version: "3.6.14"
-            dist: stretch
-            python: python
-          - version: "3.7.11"
-            dist: stretch
-            python: python
+          # - version: "2.7.18"
+          #   dist: stretch
+          #   python: python
+          # - version: "3.6.14"
+          #   dist: stretch
+          #   python: python
+          # - version: "3.7.11"
+          #   dist: stretch
+          #   python: python
           - version: "3.8.11"
             dist: buster
             python: python
