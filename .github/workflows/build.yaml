@@ -12,15 +12,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - version: "2.7.18"
-            dist: stretch
-            python: python
-          - version: "3.6.14"
-            dist: stretch
-            python: python
-          - version: "3.7.11"
-            dist: stretch
-            python: python
+          # - version: "2.7.18"
+          #   dist: stretch
+          #   python: python
+          # - version: "3.6.14"
+          #   dist: stretch
+          #   python: python
+          # - version: "3.7.11"
+          #   dist: stretch
+          #   python: python
           - version: "3.8.11"
             dist: buster
             python: python
@@ -79,7 +79,7 @@ jobs:
     strategy:
       matrix:
         dist: [buster, bullseye]
-        version: ["3.10.2", "3.9.10", "3.8.12"]
+        version: ["3.11.3", "3.10.11", "3.9.16", "3.8.16"]
         python: [python]
         include:
           - version: "2.7"
