@@ -10,8 +10,9 @@ jobs:
   build-no-wheelhouse:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        dist: [buster, bullseye]
+        dist: [bullseye]
         version: ["3.11.6", "3.10.13", "3.9.18", "3.8.18", "3.7.17"]
         python: [python]
         include:
